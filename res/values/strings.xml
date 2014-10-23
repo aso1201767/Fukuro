@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Fukuro</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="back">戻る</string>
+    <string name="save">保存</string>
 
 </resources>

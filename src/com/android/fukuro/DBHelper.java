@@ -46,6 +46,7 @@ public class DBHelper extends SQLiteOpenHelper {
 				"item_id TEXT, " +
 				"item_position TEXT NOT NULL, " +
 				"item_priority TEXT NOT NULL, " +
+				"magni TEXT NOT NULL, " +
 				"PRIMARY KEY(mylist_id,item_id), " +
 				"FOREIGN KEY(mylist_id)REFERENCES Mylist(mylist_id), " +
 				"FOREIGN KEY(item_id)REFERENCES Item(item_id))";
