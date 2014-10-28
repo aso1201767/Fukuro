@@ -16,5 +16,12 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+     <style name="eraser_radio" parent="android:Widget.DropDownItem">
+        <item name="android:checkMark">@drawable/eraser_radio</item>
+    </style>
+    <style name="cutting_radio" parent="android:Widget.DropDownItem">
+        <item name="android:checkMark">@drawable/cutting_radio</item>
+    </style>
 
 </resources>

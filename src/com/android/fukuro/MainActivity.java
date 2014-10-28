@@ -5,7 +5,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.ActionBar.TabListener;
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.content.Intent;
@@ -19,6 +23,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuffXfermode;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +34,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity implements TabListener {
 	private DBHelper dbHelper = new DBHelper(this);
 	public static SQLiteDatabase db;
 	SeekBar seekBar;
@@ -39,6 +44,21 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		// action bar を取得する
+        final ActionBar mActionBar = getActionBar();
+        
+ 
+        // ActionBarにタブを表示する
+        // このままでは表示されない
+        mActionBar.addTab(mActionBar.newTab().setText("Tab 1").setTabListener(this));
+        mActionBar.addTab(mActionBar.newTab().setText("Tab 2").setTabListener(this));
+        mActionBar.addTab(mActionBar.newTab().setText("Tab 3").setTabListener(this));
+ 
+        // ActionBarのNavigationModeを設定する
+//        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+//        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		
 		setTitle("Main");
 		
@@ -116,6 +136,27 @@ public class MainActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		// TODO 自動生成されたメソッド・スタブ
+		
+		
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		// TODO 自動生成されたメソッド・スタブ
+		
+	}
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		// TODO 自動生成されたメソッド・スタブ
+		
+	}
+	
+	
 	
 
 	

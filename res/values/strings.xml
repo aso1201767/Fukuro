@@ -4,5 +4,6 @@
     <string name="app_name">Fukuro</string>
     <string name="back">戻る</string>
     <string name="save">保存</string>
+    <string name="picture_edit_lbl">消しゴム倍率調整</string>
 
 </resources>
