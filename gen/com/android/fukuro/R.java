@@ -10,6 +10,22 @@ package com.android.fukuro;
 public final class R {
     public static final class attr {
     }
+    public static final class color {
+        /**      
+    <style>
+    </style>
+ 
+         */
+        public static final int action_bar_background=0x7f040008;
+        public static final int actionbar_background=0x7f040000;
+        public static final int actionbar_background2=0x7f040001;
+        public static final int actionbar_tabtext=0x7f040003;
+        public static final int actionbar_text=0x7f040002;
+        public static final int tab_selected=0x7f040006;
+        public static final int tab_unselected=0x7f040005;
+        public static final int textview_text=0x7f040004;
+        public static final int white=0x7f040007;
+    }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
 
@@ -18,35 +34,52 @@ public final class R {
          would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively).
     
          */
-        public static final int activity_horizontal_margin=0x7f040000;
-        public static final int activity_vertical_margin=0x7f040001;
+        public static final int activity_horizontal_margin=0x7f050000;
+        public static final int activity_vertical_margin=0x7f050001;
     }
     public static final class drawable {
-        public static final int border=0x7f020000;
-        public static final int cutting=0x7f020001;
-        public static final int cutting_on=0x7f020002;
-        public static final int cutting_radio=0x7f020003;
-        public static final int eraser=0x7f020004;
-        public static final int eraser_on=0x7f020005;
-        public static final int eraser_radio=0x7f020006;
-        public static final int ic_launcher=0x7f020007;
+        public static final int actionbar_tab_indicator=0x7f020000;
+        public static final int border=0x7f020001;
+        public static final int cutting=0x7f020002;
+        public static final int cutting_on=0x7f020003;
+        public static final int cutting_radio=0x7f020004;
+        public static final int eraser=0x7f020005;
+        public static final int eraser_on=0x7f020006;
+        public static final int eraser_radio=0x7f020007;
+        public static final int globe_icon_selected=0x7f020008;
+        public static final int hanger_icon_selected=0x7f020009;
+        public static final int ic_launcher=0x7f02000a;
+        public static final int photo_icon_selected=0x7f02000b;
+        public static final int tab=0x7f02000c;
+        public static final int user_icon=0x7f02000d;
+        public static final int user_icon_selected=0x7f02000e;
     }
     public static final class id {
-        public static final int RadioGroup=0x7f080007;
-        public static final int SeekBar=0x7f08000b;
-        public static final int btn_picture_edit=0x7f080000;
-        public static final int container=0x7f08000d;
-        public static final int draw_back_btn=0x7f08000a;
-        public static final int fragment1=0x7f080002;
-        public static final int fragment2=0x7f08000c;
-        public static final int imageView2=0x7f080006;
-        public static final int layout_root=0x7f080001;
-        public static final int next=0x7f080003;
-        public static final int radioButton1=0x7f080008;
-        public static final int radioButton2=0x7f080009;
-        public static final int save=0x7f08000e;
-        public static final int textView1=0x7f080004;
-        public static final int view1=0x7f080005;
+        public static final int RadioGroup=0x7f090007;
+        public static final int SeekBar=0x7f09000b;
+        public static final int btn_picture_edit=0x7f090000;
+        public static final int container=0x7f09000f;
+        public static final int draw_back_btn=0x7f09000a;
+        public static final int fragment1=0x7f090002;
+        public static final int fragment2=0x7f09000c;
+        public static final int imageView2=0x7f090006;
+        public static final int layout_root=0x7f090001;
+        public static final int next=0x7f090003;
+        public static final int radioButton1=0x7f090008;
+        public static final int radioButton2=0x7f090009;
+        public static final int save=0x7f090018;
+        public static final int tab1_icon=0x7f09000d;
+        public static final int tab1_title=0x7f09000e;
+        public static final int tab_mypage_icon=0x7f090010;
+        public static final int tab_mypage_title=0x7f090011;
+        public static final int tab_photo_icon=0x7f090012;
+        public static final int tab_photo_title=0x7f090013;
+        public static final int tab_style_icon=0x7f090014;
+        public static final int tab_style_title=0x7f090015;
+        public static final int tab_wear_icon=0x7f090016;
+        public static final int tab_wear_title=0x7f090017;
+        public static final int textView1=0x7f090004;
+        public static final int view1=0x7f090005;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -57,19 +90,27 @@ public final class R {
         public static final int picture_edit=0x7f030005;
         public static final int second=0x7f030006;
         public static final int second_fragment=0x7f030007;
-        public static final int tab_main=0x7f030008;
+        public static final int tab1=0x7f030008;
+        public static final int tab_main=0x7f030009;
+        public static final int tab_mypage=0x7f03000a;
+        public static final int tab_photo=0x7f03000b;
+        public static final int tab_style=0x7f03000c;
+        public static final int tab_wear=0x7f03000d;
     }
     public static final class menu {
-        public static final int main=0x7f070000;
-        public static final int picture_edit=0x7f070001;
+        public static final int main=0x7f080000;
+        public static final int picture_edit=0x7f080001;
     }
     public static final class string {
-        public static final int app_name=0x7f050000;
-        public static final int back=0x7f050001;
-        public static final int picture_edit_lbl=0x7f050003;
-        public static final int save=0x7f050002;
+        public static final int app_name=0x7f060000;
+        public static final int back=0x7f060001;
+        public static final int picture_edit_lbl=0x7f060003;
+        public static final int save=0x7f060002;
     }
     public static final class style {
+        /**  API level 10以下用 
+         */
+        public static final int ActionBarTabs=0x7f070001;
         /** 
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
@@ -91,12 +132,29 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f060000;
+        public static final int AppBaseTheme=0x7f070000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f060001;
-        public static final int cutting_radio=0x7f060003;
-        public static final int eraser_radio=0x7f060002;
+        public static final int AppTheme=0x7f070007;
+        /**  <item name="android:background">@color/actionbar_background</item> 
+         */
+        public static final int CustomActionBarTheme=0x7f070002;
+        /**  ActionBar styles 
+ Support library compatibility 
+         */
+        public static final int MyActionBar=0x7f070003;
+        /**  ActionBar tabs styles 
+         */
+        public static final int MyActionBarTabs=0x7f070005;
+        /**  ActionBar title text 
+ The textColor property is backward compatible with the Support Library 
+         */
+        public static final int MyActionBarTitleText=0x7f070004;
+        /**  style for the tab bar 
+         */
+        public static final int customActionBarTabBarStyle=0x7f070006;
+        public static final int cutting_radio=0x7f070009;
+        public static final int eraser_radio=0x7f070008;
     }
 }
