@@ -53,8 +53,6 @@ public class TabLayout extends Activity{
         actionBar.addTab(tab); // (3)
         TextView textView = (TextView) findViewById(tabTitleId);
         textView.setText(title);
-        //ImageView image = (ImageView) findViewById(tabIconId);
-        //image.setImageResource(iconId);
 	}
 
 	void move() {
@@ -62,17 +60,16 @@ public class TabLayout extends Activity{
         startActivity(intent);
     }
 	    
-	  public static class MainTabListener<T extends Fragment> 
-	    implements ActionBar.TabListener {
+	public static class MainTabListener<T extends Fragment> implements ActionBar.TabListener {
 	    
 	    private Fragment _fragment;
 	    private final Activity _activity;
 	    private final Class<T> _cls;
 	    
 	    public MainTabListener(
-	      Activity activity, Class<T> cls){
-	      this._activity = activity;
-	      this._cls = cls;
+		    Activity activity, Class<T> cls){
+		    this._activity = activity;
+		    this._cls = cls;
 	    }
 	      
 	    @Override
@@ -83,30 +80,19 @@ public class TabLayout extends Activity{
 
 	    @Override
 	    public void onTabSelected(Tab tab, FragmentTransaction ft) {
-	      if(_fragment == null){
-	        _fragment = Fragment.instantiate(_activity, _cls.getName());
-	        ft.add(android.R.id.content, _fragment);
-	      }
-	      else{
-	        ft.attach(_fragment);
-	      }    
-	      if(tab.getPosition()==0){
-	    	  tab.setIcon(R.drawable.user_icon);
-	    	  
-	      }
-	      
+		    if(_fragment == null){
+		    	_fragment = Fragment.instantiate(_activity, _cls.getName());
+		    	ft.add(android.R.id.content, _fragment);
+		    }else{
+		    	ft.attach(_fragment);
+		    }    
 	    }
 
 	    @Override
 	    public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-	      if(_fragment != null){
-	        ft.detach(_fragment);
-	      }
-	      if(tab.getPosition()==0){
-	    	  tab.setIcon(R.drawable.user_icon);
-	      }
+	    	if(_fragment != null){
+	    		ft.detach(_fragment);
+	    	}
 	    }
-	    }
-	
-
+	}
 }

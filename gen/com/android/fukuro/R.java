@@ -16,15 +16,16 @@ public final class R {
     </style>
  
          */
-        public static final int action_bar_background=0x7f040008;
+        public static final int action_bar_background=0x7f040009;
         public static final int actionbar_background=0x7f040000;
         public static final int actionbar_background2=0x7f040001;
-        public static final int actionbar_tabtext=0x7f040003;
         public static final int actionbar_text=0x7f040002;
-        public static final int tab_selected=0x7f040006;
-        public static final int tab_unselected=0x7f040005;
-        public static final int textview_text=0x7f040004;
-        public static final int white=0x7f040007;
+        public static final int black=0x7f040008;
+        public static final int tab_selected=0x7f040004;
+        public static final int tab_title_selected=0x7f040007;
+        public static final int tab_title_unselected=0x7f040006;
+        public static final int tab_unselected=0x7f040003;
+        public static final int white=0x7f040005;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -53,11 +54,11 @@ public final class R {
         public static final int ic_launcher=0x7f02000c;
         public static final int photo_icon=0x7f02000d;
         public static final int photo_icon_selected=0x7f02000e;
-        public static final int tab=0x7f02000f;
-        public static final int tab_mypage_image=0x7f020010;
-        public static final int tab_photo=0x7f020011;
-        public static final int tab_style=0x7f020012;
-        public static final int tab_wear=0x7f020013;
+        public static final int tab_mypage_image=0x7f02000f;
+        public static final int tab_photo_image=0x7f020010;
+        public static final int tab_style_image=0x7f020011;
+        public static final int tab_title=0x7f020012;
+        public static final int tab_wear_image=0x7f020013;
         public static final int user_icon=0x7f020014;
         public static final int user_icon_selected=0x7f020015;
     }

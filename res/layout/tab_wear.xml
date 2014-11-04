@@ -8,10 +8,11 @@
         android:id="@+id/tab_wear_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/tab_wear" />
+        android:background="@drawable/tab_wear_image" />
     <TextView
         android:id="@+id/tab_wear_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@drawable/tab_title" />
     
 </LinearLayout>
