@@ -20,7 +20,7 @@ public class FirstFragment extends Fragment{
 
 	            @Override
 	            public void onClick(View v) {
-	               // parent.move();
+	                parent.move();
 	            }
 	        });
 	        return view;

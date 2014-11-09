@@ -34,6 +34,7 @@ public class picture_edit extends Activity {
 	public Canvas mcanvas;
 	public RadioButton eraser;
 	public RadioButton cutting;
+	public RadioButton move;
 	private void setViewId(){
 		penview = (penView)findViewById(R.id.view1);
 	}
@@ -113,10 +114,12 @@ public class picture_edit extends Activity {
 	                }
 	        );
 	        
+	        
 	     // ラジオグループのオブジェクトを取得
 	        RadioGroup rg = (RadioGroup)findViewById(R.id.RadioGroup);
 	        eraser = (RadioButton)findViewById(R.id.radioButton1);
 	        cutting = (RadioButton)findViewById(R.id.radioButton2);
+	        move = (RadioButton)findViewById(R.id.radioButton3);
 
 	        // ラジオグループのチェック状態変更イベントを登録
 	        rg.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -132,6 +135,9 @@ public class picture_edit extends Activity {
 	                }else if(radioButton.getId()==cutting.getId()){
 	                	penview.pen_mode="cutting";
 	                	Log.d("ラジオボタン","ハサミを押した");
+	                }else if(radioButton.getId()==move.getId()){
+	                	penview.pen_mode="move";
+	                	Log.d("ラジオボタン","移動を押した");
 	                }
 	            }
 	        });
@@ -222,7 +228,8 @@ public class picture_edit extends Activity {
 			 }
 			 
 			 _bm.setPixels(pixels, 0, width, 0, 0, width, height);
-			saveBitmapToSd(_bm);
+			//saveBitmapToSd(_bm);
+			 penview.saveBitmapToSd();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -246,5 +253,5 @@ public class picture_edit extends Activity {
 		 } catch (Exception e) {
 		 Log.e("Error", "" + e.toString());
 		 }
-		}
+	}
 }

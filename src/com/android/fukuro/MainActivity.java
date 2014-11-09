@@ -1,121 +1,71 @@
 package com.android.fukuro;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import android.app.ActionBar;
-import android.app.ActionBar.Tab;
-import android.app.ActionBar.TabListener;
-import android.app.Activity;
-import android.app.FragmentTransaction;
+import com.android.fukuro.ViewFlipperSample.MyView;
+
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PorterDuffXfermode;
-import android.support.v4.app.FragmentActivity;
+import android.os.Handler;
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 
-public class MainActivity extends FragmentActivity implements TabListener {
-	private DBHelper dbHelper = new DBHelper(this);
-	public static SQLiteDatabase db;
-	SeekBar seekBar;
-	public Canvas mcanvas;
+public class MainActivity extends Activity {
+
+	
+	private Timer mainTimer;					//タイマー用
+	private MainTimerTask mainTimerTask;		//タイマタスククラス
+	private TextView countText;					//テキストビュー
+	private int count = 0;						//カウント
+	private Handler mHandler = new Handler();   //UI Threadへのpost用ハンドラ
+	
+	// タッチの状態管理
+		private static final int TOUCH_NONE   = 0;
+		private static final int TOUCH_SINGLE = 1;
+		private static final int TOUCH_MULTI  = 2;
+		private int touchMode = TOUCH_NONE;
+		// 画像処理
+		private Matrix baseMatrix = new Matrix(); // タッチダウン時の画像保存用
+		private Matrix imgMatrix = new Matrix(); //　画像変換用
+		private PointF po0 = new PointF();   // 移動の開始点
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		// action bar を取得する
-        final ActionBar mActionBar = getActionBar();
-        
- 
-        // ActionBarにタブを表示する
-        // このままでは表示されない
-        mActionBar.addTab(mActionBar.newTab().setText("Tab 1").setTabListener(this));
-        mActionBar.addTab(mActionBar.newTab().setText("Tab 2").setTabListener(this));
-        mActionBar.addTab(mActionBar.newTab().setText("Tab 3").setTabListener(this));
- 
-        // ActionBarのNavigationModeを設定する
-//        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-//        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		//タイマーインスタンス生成
+		this.mainTimer = new Timer();
+		//タスククラスインスタンス生成
+		this.mainTimerTask = new MainTimerTask();				
+		//タイマースケジュール設定＆開始
+		this.mainTimer.schedule(mainTimerTask, 1000,500);
+		//テキストビュー
+		this.countText = (TextView)findViewById(R.id.tv1);
 		
-		setTitle("Main");
-		
-		Button btn = (Button)findViewById(R.id.btn_picture_edit);
-		 btn.setOnClickListener(new View.OnClickListener() {
-			 @Override
-	        	public void onClick(View v) {
-				// インテントのインスタンス生成
-				 Intent intent = new Intent(MainActivity.this, picture_edit.class);
-				 // 次画面のアクティビティ起動
-				 startActivity(intent);
-			 	}
-		 });
-		
-		//読み書き可能なデータベースをオープン
-		// 読み取り専用の場合はgetReadableDatabase()を用いる
-		db = dbHelper.getWritableDatabase();
-		
-		FileOutputStream fo;
+		Button btnMove = (Button) findViewById(R.id.btn_picture_edit);
 
-		File newfile = new File("/data/data/com.android.fukuro/Item");
-		File newfile2 = new File("/data/data/com.android.fukuro/Thambnail");
+        btnMove.setOnClickListener(new OnClickListener() {
 
-		   if (newfile.mkdir()){
-		     //System.out.println("ディレクトリの作成に成功しました");
-		     Log.d("ファイル作成","ディレクトリの作成に成功しました");
-		   }else{
-		     //System.out.println("ディレクトリの作成に失敗しました");
-		     Log.d("ファイル作成","ディレクトリの作成に失敗しました");
-		   }
-
-		   if (newfile2.mkdir()){
-		     //System.out.println("ディレクトリの作成に成功しました");
-		     Log.d("ファイル作成","ディレクトリの作成に成功しました");
-
-		   }else{
-		     //System.out.println("ディレクトリの作成に失敗しました");
-		     Log.d("ファイル作成","ディレクトリの作成に失敗しました");
-		   }
-
-		   try{
-		   File f = new File("/data/data/com.android.fukuro/Item/test2.txt");
-		       File parent = f.getParentFile();
-		       if (parent != null && parent.canWrite()) { parent.mkdirs(); }
-		       fo = new FileOutputStream(f);
-
-		   } catch (IOException e) {
-		       Log.e("text作成","text作成に失敗しました");
-		   }
-        
-	}
-
-	@Override
-	public void onDestroy(){
-		super.onDestroy();
-		dbHelper.close();
-		
+            @Override
+            public void onClick(View v) {
+            	Log.d("timer","停止");
+            	mainTimer.cancel();
+            }
+        });
+			 
 	}
 
 	@Override
@@ -124,40 +74,107 @@ public class MainActivity extends FragmentActivity implements TabListener {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.save) {
+	/**
+	 * タイマータスク派生クラス
+	 * run()に定周期で処理したい内容を記述
+	 * 
+	 */
+	public class MainTimerTask extends TimerTask {
+		@Override
+		public void run() {
+			//ここに定周期で実行したい処理を記述します			
+	         mHandler.post( new Runnable() {
+	             public void run() {
+	            	 Log.d("main","run");
+	 
+	                 //実行間隔分を加算処理
+	            	 count += 1;
+	            	 //画面にカウントを表示
+	            	 countText.setText(String.valueOf(count));
+	             }
+	         });
+		}
+	}
+	
+	class MyView extends ImageView {
+		private ScaleGestureDetector gesDetect = null;
+	  
+		public MyView(Context context) {
+			super(context);
+			// TODO Auto-generated constructor stub
+			setImageResource(R.drawable.cutting_on);
+			setScaleType(ImageView.ScaleType.MATRIX);
+			gesDetect = new ScaleGestureDetector(context, onScaleGestureListener);
+		}
+
+		@Override
+		public boolean onTouchEvent(MotionEvent event) {
+			// TODO Auto-generated method stub
+			int action = event.getAction() & MotionEvent.ACTION_MASK;
+			int count = event.getPointerCount();
+	  
+			// 移動
+			switch(action) {
+			case MotionEvent.ACTION_DOWN:
+				if(touchMode == TOUCH_NONE && count == 1) {
+					Log.v("touch", "DOWN");
+					po0.set(event.getX(), event.getY());
+					baseMatrix.set(imgMatrix);
+					touchMode = TOUCH_SINGLE;
+				}
+				break;
+			case MotionEvent.ACTION_MOVE:
+				if(touchMode == TOUCH_SINGLE) {
+					Log.v("touch", "MOVE");
+					// 移動処理
+					imgMatrix.set(baseMatrix);
+					imgMatrix.postTranslate(event.getX() - po0.x, event.getY() - po0.y);
+				}
+				break;
+			case MotionEvent.ACTION_UP:
+				if(touchMode == TOUCH_SINGLE) {
+					Log.v("touch", "UP");
+					touchMode = TOUCH_NONE;
+				}
+				break;
+			}
+			if(count >= 2) {
+				gesDetect.onTouchEvent(event);
+			}
+			setImageMatrix(imgMatrix);
 			return true;
 		}
-		return super.onOptionsItemSelected(item);
-	}
+	  
+		private final SimpleOnScaleGestureListener onScaleGestureListener = new SimpleOnScaleGestureListener() {
 
-	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		// TODO 自動生成されたメソッド・スタブ
+			@Override
+			public boolean onScale(ScaleGestureDetector detector) {
+				// TODO Auto-generated method stub
+				imgMatrix.set(baseMatrix);
+				imgMatrix.postScale(detector.getScaleFactor(), detector.getScaleFactor(),
+			      detector.getFocusX(), detector.getFocusY());
+				return super.onScale(detector);
+			}
 		
+			@Override
+			public boolean onScaleBegin(ScaleGestureDetector detector) {
+				// TODO Auto-generated method stub
+				Log.v("touch", "onScaleBegin");
+				baseMatrix.set(imgMatrix);
+				touchMode = TOUCH_MULTI;
+				return super.onScaleBegin(detector);
+			}
 		
+			@Override
+			public void onScaleEnd(ScaleGestureDetector detector) {
+				// TODO Auto-generated method stub
+				Log.v("touch", "onScaleEnd");
+				touchMode = TOUCH_NONE;
+				super.onScaleEnd(detector);
+			}
+			
+		};
 	}
-
-	@Override
-	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		// TODO 自動生成されたメソッド・スタブ
-		
-	}
-
-	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) {
-		// TODO 自動生成されたメソッド・スタブ
-		
-	}
-	
-	
-	
-
-	
 }

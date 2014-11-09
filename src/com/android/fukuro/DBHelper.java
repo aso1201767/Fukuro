@@ -32,13 +32,15 @@ public class DBHelper extends SQLiteOpenHelper {
 				"item_id TEXT, " +
 				"item TEXT NOT NULL, " +
 				"category_id TEXT NOT NULL, " +
-				"memo TEXT NOT NULL, " +
+				"memo TEXT , " +
 				"PRIMARY KEY(item_id), " +
 				"FOREIGN KEY(category_id)REFERENCES Category(category_id))";
 		// マイリストテーブル
 		String sql4 = "CREATE TABLE Mylist ( " +
 				"mylist_id TEXT, " +
 				"thambnail TEXT NOT NULL, " +
+				"maked TEXT NOT NULL," +
+				"favorite TEXT NOT NULL," +
 				"PRIMARY KEY(mylist_id))";
 		// マイリスト構成テーブル
 		String sql5 = "CREATE TABLE Mylistmaking ( " +
@@ -83,6 +85,17 @@ public class DBHelper extends SQLiteOpenHelper {
 		db.execSQL("INSERT INTO Category(category_id,category_name) VALUES('5','パンツ')");
 		db.execSQL("INSERT INTO Category(category_id,category_name) VALUES('6','ショートパンツ')");
 		db.execSQL("INSERT INTO Category(category_id,category_name) VALUES('7','全身')");
+
+		db.execSQL("INSERT INTO Mylist(mylist_id,thambnail,maked,favorite) VALUES('01','item_Tshats1.png','2014/11/04 11:13:21','false')");
+		db.execSQL("INSERT INTO Mylist(mylist_id,thambnail,maked,favorite) VALUES('02','item_Tshats2.png','2014/10/04 11:13:22','false')");
+		db.execSQL("INSERT INTO Mylist(mylist_id,thambnail,maked,favorite) VALUES('03','item_Tshats3.png','2014/11/04 11:13:23','false')");
+		db.execSQL("INSERT INTO Mylist(mylist_id,thambnail,maked,favorite) VALUES('04','item_all1.png','2014/11/02 11:14:23','true')");
+		db.execSQL("INSERT INTO Mylist(mylist_id,thambnail,maked,favorite) VALUES('05','item_all2.png','2014/11/04 10:14:23','false')");
+		db.execSQL("INSERT INTO Mylist(mylist_id,thambnail,maked,favorite) VALUES('06','item_all3.png','2014/11/04 10:24:23','false')");
+		
+		db.execSQL("INSERT INTO Item(item_id,item,category_id,memo) VALUES('0001','Testo01.png','7','')");
+		
+		
 	}
 
 	@Override

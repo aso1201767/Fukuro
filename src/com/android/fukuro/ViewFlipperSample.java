@@ -115,6 +115,7 @@ public class ViewFlipperSample extends Activity {
 				touchMode = TOUCH_NONE;
 				super.onScaleEnd(detector);
 			}
+			
 		};
 	}
 }

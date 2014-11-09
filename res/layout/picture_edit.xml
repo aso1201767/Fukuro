@@ -52,6 +52,12 @@
         android:button="@null"
         android:checked="false" />
 
+    <RadioButton
+        android:id="@+id/radioButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="移動" />
+
 </RadioGroup>
 
 <Button
@@ -75,7 +81,7 @@
     android:max="90" />
 
 <TextView
-    android:id="@+id/textView1"
+    android:id="@+id/tv1"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignLeft="@+id/SeekBar"
