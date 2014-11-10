@@ -4,14 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
-import com.android.fukuro.Fragment2.MainTimerTask;
-import com.android.fukuro.MyPage.MyHandler;
-import com.android.fukuro.R.id;
 import android.app.Activity;
 import android.app.Fragment;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,12 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.view.View.OnClickListener;
 
-public class Fragment1 extends Fragment{
+public class MyPage extends Fragment{
 	 private TabLayout parent;
 	 private static final String TAG = "myTag";
 	 private int selectedIndex = 0;
@@ -40,7 +28,6 @@ public class Fragment1 extends Fragment{
 	 private boolean firstflg = false;
 	 private String topimage; 
 	 private File dir = new File("/data/data/com.android.fukuro/Item");
-	 private boolean topimageflg = true;
 	 private Timer mainTimer;					//タイマー用
 	 private MyTask mainTimerTask;		//タイマタスククラス
 	 private MyHandler mHandler = new MyHandler();   //UI Threadへのpost用ハンドラ
