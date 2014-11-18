@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f0e68c"
+    android:background="#ffffff"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -12,63 +12,9 @@
     <com.android.fukuro.penView
         android:id="@+id/view1"
         android:layout_width="500dp"
-        android:layout_height="150dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="21dp"
-        android:background="@drawable/border" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/view1"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="24dp"
-        android:background="@drawable/border"
-        android:src="@drawable/ic_launcher" />
-
-<RadioGroup
-    android:id="@+id/RadioGroup"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignRight="@+id/view1"
-    android:layout_alignTop="@+id/imageView2" >
-
-    <RadioButton
-        android:id="@+id/radioButton1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/eraser_radio"
-        android:button="@null"
-        android:checked="true" />
-
-    <RadioButton
-        android:id="@+id/radioButton2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/cutting_radio"
-        android:button="@null"
-        android:checked="false" />
-
-    <RadioButton
-        android:id="@+id/radioButton3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="移動" />
-
-</RadioGroup>
-
-<Button
-    android:id="@+id/draw_back_btn"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignLeft="@+id/RadioGroup"
-    android:layout_below="@+id/RadioGroup"
-    android:layout_marginLeft="16dp"
-    android:layout_marginTop="15dp"
-    android:text="@string/back" />
+        android:layout_height="300dp"
+        android:layout_marginBottom="12dp"
+        android:background="#000000" />
 
 <SeekBar
     android:id="@+id/SeekBar"
@@ -87,5 +33,49 @@
     android:layout_alignLeft="@+id/SeekBar"
     android:layout_below="@+id/draw_back_btn"
     android:text="@string/picture_edit_lbl" />
+
+<RadioGroup
+    android:id="@+id/RadioGroup"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignLeft="@+id/view1"
+    android:layout_below="@+id/view1"
+    android:orientation="horizontal" >
+
+    <RadioButton
+        android:id="@+id/radioButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/eraser_radio"
+        android:button="@null"
+        android:checked="true" />
+
+    <RadioButton
+        android:id="@+id/radioButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/cutting_radio"
+        android:button="@null"
+        android:checked="false" />
+
+    <RadioButton
+        android:id="@+id/radioButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/move_radio"
+        android:button="@null"
+        android:checked="false" />
+</RadioGroup>
+
+<Button
+    android:id="@+id/draw_back_btn"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignRight="@+id/view1"
+    android:layout_alignTop="@+id/RadioGroup"
+    android:layout_marginTop="64dp"
+    android:text="@string/back" />
 
 </RelativeLayout>

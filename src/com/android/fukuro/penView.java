@@ -1,6 +1,8 @@
 package com.android.fukuro;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import android.content.Context;
@@ -19,7 +21,8 @@ import android.graphics.PorterDuffXfermode;
 import android.view.*;
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
+import android.widget.Toast;
+import android.os.Environment;
 import android.util.*;
 
 public class penView extends ImageView {
@@ -42,10 +45,11 @@ public class penView extends ImageView {
 	private Bitmap source;// 画像
 	private Bitmap result;// 描画領域
 	private boolean f = true;
-	//private Canvas scanvas;
-	private Bitmap sresult;
-	private Matrix amt;
-	private boolean imagef=true;
+	private Bitmap capturedImage;
+	String previousview=null;//全画面
+	String camerapath=null;
+	FileInputStream in = null;
+	String cameraname=null;
 
 	// タッチの状態管理
 	private static final int TOUCH_NONE = 0;
@@ -63,41 +67,36 @@ public class penView extends ImageView {
 	public penView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		setFocusable(true);
-		setImageResource(R.drawable.cutting_on);
-		Log.d("Image", "セット");
 		setScaleType(ImageView.ScaleType.MATRIX);
-		Log.d("scaletype", "セット");
 		gesDetect = new ScaleGestureDetector(context, onScaleGestureListener);
 	}
 
-	
-
 	protected void onDraw(Canvas canvas) {
+		Log.i("test","onDraw");
+		if(previousview.equals("camera")){
+			try {
+				in = new FileInputStream(camerapath);
+			} catch (FileNotFoundException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}
+		}else{
+		}
 		super.onDraw(canvas);
 		if (pen_mode == "move") {
 			//setImageBitmap(result);
-			Log.d("onDraw", "move");
 		} else {
-			Log.d("onDraw", "cutting");
 			canvas.drawColor(Color.argb(255, 0, 0, 0));
-			File dir = new File("/data/data/com.android.fukuro/Item");
-			if (dir.exists()) {
-				File file = new File(dir.getAbsolutePath() + "/item_all4.png");
-				if (file.exists()) {
-					Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
-					mbitmap = BitmapFactory.decodeFile(file.getPath());
-					source = BitmapFactory.decodeFile(file.getPath());
-					// ((ImageView)findViewById(R.id.imageView1)).setImageBitmap(_bm);
-					canvas.drawBitmap(_bm, 0, 0, null);
-				} else {
-					// 存在しない
-				}
-			}
 			Resources r = getResources();
-			//Bitmap bmp = BitmapFactory.decodeResource(r, R.drawable.cutting_on);
-			//source = BitmapFactory.decodeResource(r, R.drawable.cutting_on);
+//			Bitmap bmp = BitmapFactory.decodeResource(r, R.drawable.cutting_on);
+//			source = BitmapFactory.decodeResource(r, R.drawable.cutting);
 			//mbitmap = BitmapFactory.decodeResource(r, R.drawable.cutting_on);
-			//canvas.drawBitmap(bmp, 0, 0, null);
+			BitmapFactory.Options options= new BitmapFactory.Options();
+			options.inSampleSize = 5;
+			source= BitmapFactory.decodeStream(in,null,options);
+			canvas.drawBitmap(source, imgMatrix, null);
+
+			
 			if (draw_list.size() == 0) {
 				f = true;
 			}
@@ -109,7 +108,6 @@ public class penView extends ImageView {
 				paint.setStrokeJoin(Paint.Join.ROUND);
 				// paint.setXfermode(new
 				// PorterDuffXfermode(android.graphics.PorterDuff.Mode.XOR));
-				Log.d("penview", "" + pen_mode);
 				// 現在、描画した線のPaint
 				p = new Paint();
 				p.setARGB(255, 0, 0, 0);
@@ -167,7 +165,7 @@ public class penView extends ImageView {
 			if (!f) {
 				canvas.drawColor(Color.argb(255, 0, 0, 0));
 				canvas.drawBitmap(result, imgMatrix, null);
-				sresult=result;
+				Log.d("","result10="+imgMatrix);
 			}
 			// current
 			if (flg) {
@@ -185,96 +183,59 @@ public class penView extends ImageView {
 		}
 	}
 
-	public boolean onTouchEvent(MotionEvent event) {
-		// switch(e.getAction()){
-		// case MotionEvent.ACTION_DOWN: //最初のポイント
-		// path = new Path();
-		// posx = e.getX();
-		// posy = e.getY();
-		// path.moveTo(e.getX(), e.getY());
-		// flg=true;
-		// break;
-		// case MotionEvent.ACTION_MOVE: //途中のポイント
-		// posx += (e.getX()-posx)/1.4;
-		// posy += (e.getY()-posy)/1.4;
-		// path.lineTo(posx, posy);
-		// invalidate();
-		// break;
-		// case MotionEvent.ACTION_UP: //最後のポイント
-		// path.lineTo(e.getX(), e.getY());
-		// draw_list.add(path);
-		// draw_paint_list.add(paintx);
-		// draw_paint_mode.add(pen_mode);
-		// invalidate();
-		// break;
-		// default:
-		// break;
-		// }
-		// return true;
-		// TODO Auto-generated method stub
-		int action = event.getAction() & MotionEvent.ACTION_MASK;
-		int count = event.getPointerCount();
+	public boolean onTouchEvent(MotionEvent e) {
+		int action = e.getAction() & MotionEvent.ACTION_MASK;
+		int count = e.getPointerCount();
+		if(result==null){
+			setImageBitmap(source);
+		}else{
+			setImageBitmap(result);
+		}
 
-		// 移動
 		switch (action) {
-		case MotionEvent.ACTION_DOWN:
-			if (pen_mode == "move") {
-				if(result==null){
-					setImageBitmap(source);
-				}else{
-					setImageBitmap(result);
-				}
+		case MotionEvent.ACTION_DOWN://タッチイベント開始
+			if (pen_mode == "move") {//移動
 				if (touchMode == TOUCH_NONE && count == 1) {
-					Log.v("touch", "DOWN");
-					Log.v("onScale", "1=" + baseMatrix);
-					Log.v("onScale", "2=" + imgMatrix);
-					po0.set(event.getX(), event.getY());
+					po0.set(e.getX(), e.getY());
 					baseMatrix.set(imgMatrix);
 					touchMode = TOUCH_SINGLE;
 				}
-			} else {
+			} else {//消しゴム・切り取り
 				path = new Path();
 				nowpath= new Path();
-				posx = event.getX();
-				posy = event.getY();
-				path.moveTo(event.getX()-po1.x, event.getY()-po1.y);
-				nowpath.moveTo(event.getX(), event.getY());
+				posx = e.getX();
+				posy = e.getY();
+				path.moveTo(e.getX()-po1.x, e.getY()-po1.y);
+				nowpath.moveTo(e.getX(), e.getY());
 				flg = true;
 			}
 			break;
-		case MotionEvent.ACTION_MOVE:
-			if (pen_mode == "move") {
+		case MotionEvent.ACTION_MOVE://タッチイベント処理
+			if (pen_mode == "move") {//移動
 				if (touchMode == TOUCH_SINGLE) {
-					Log.v("touch", "MOVE");
-					Log.v("onScale", "3=" + baseMatrix);
-					Log.v("onScale", "4=" + imgMatrix);
 					// 移動処理
 					imgMatrix.set(baseMatrix);
-					imgMatrix.postTranslate(event.getX() - po0.x, event.getY()
+					imgMatrix.postTranslate(e.getX() - po0.x, e.getY()
 							- po0.y);
 				}
-			} else {
-				posx += (event.getX() - posx) / 1.4;
-				posy += (event.getY() - posy) / 1.4;
+			} else {//消しゴム・切り取り
+				posx += (e.getX() - posx) / 1.4;
+				posy += (e.getY() - posy) / 1.4;
 				path.lineTo(posx-po1.x, posy-po1.y);
 				nowpath.lineTo(posx, posy);
 				invalidate();
 			}
 			break;
-		case MotionEvent.ACTION_UP:
-			if (pen_mode == "move") {
+		case MotionEvent.ACTION_UP://タッチイベント終了
+			if (pen_mode == "move") {//移動
 				if (touchMode == TOUCH_SINGLE) {
-					Log.v("touch", "UP");
-					Log.v("onScale", "5=" + baseMatrix);
-					Log.v("onScale", "6=" + imgMatrix);
 					touchMode = TOUCH_NONE;
-					po1.x+=event.getX()-po0.x;
-					po1.y+=event.getY()-po0.y;
-					Log.d("onScale","7="+po1.x+"8="+po1.y);
+					po1.x+=e.getX()-po0.x;
+					po1.y+=e.getY()-po0.y;
 				}
-			} else {
-				path.lineTo(event.getX()-po1.x, event.getY()-po1.y);
-				nowpath.lineTo(event.getX(), event.getY());
+			} else {//消しゴム・切り取り
+				path.lineTo(e.getX()-po1.x, e.getY()-po1.y);
+				nowpath.lineTo(e.getX(), e.getY());
 				draw_list.add(path);
 				draw_paint_list.add(paintx);
 				draw_paint_mode.add(pen_mode);
@@ -284,10 +245,9 @@ public class penView extends ImageView {
 			break;
 		}
 		if (count >= 2) {
-			gesDetect.onTouchEvent(event);
+			gesDetect.onTouchEvent(e);
 		}
 		setImageMatrix(imgMatrix);
-		Log.e("img", "imgMatrix" + imgMatrix);
 		return true;
 	}
 
@@ -297,6 +257,7 @@ public class penView extends ImageView {
 		int size2 = draw_paint_list.size() - 1;
 		int size3 = draw_paint_mode.size() - 1;
 		int size4 = draw_matrix.size()-1;
+		
 		if (size >= 0 && size2 >= 0 && size3 >= 0 && size>=0) {
 			draw_list.remove(size);
 			draw_paint_list.remove(size2);
@@ -311,17 +272,17 @@ public class penView extends ImageView {
 	public ArrayList<Path> capview() {
 		return draw_list;
 	}
-
+	
 	public ArrayList<Float> paint_width() {
 		return draw_paint_list;
 	}
 
+	//拡大・縮小
 	private final SimpleOnScaleGestureListener onScaleGestureListener = new SimpleOnScaleGestureListener() {
 
 		@Override
 		public boolean onScale(ScaleGestureDetector detector) {
 			// TODO Auto-generated method stub
-			Log.d("onScale", "1");
 			imgMatrix.set(baseMatrix);
 			imgMatrix.postScale(detector.getScaleFactor(),
 					detector.getScaleFactor(), detector.getFocusX(),
@@ -332,7 +293,6 @@ public class penView extends ImageView {
 		@Override
 		public boolean onScaleBegin(ScaleGestureDetector detector) {
 			// TODO Auto-generated method stub
-			Log.v("touch", "onScaleBegin");
 			baseMatrix.set(imgMatrix);
 			touchMode = TOUCH_MULTI;
 			return super.onScaleBegin(detector);
@@ -341,12 +301,14 @@ public class penView extends ImageView {
 		@Override
 		public void onScaleEnd(ScaleGestureDetector detector) {
 			// TODO Auto-generated method stub
-			Log.v("touch", "onScaleEnd");
 			touchMode = TOUCH_NONE;
 			super.onScaleEnd(detector);
 		}
 	};
+	
+	//保存処理
 	public void saveBitmapToSd() {
+		
 		int width = result.getWidth();
 		 int height = result.getHeight();
 		 int pixels[] = new int[width * height];
@@ -365,25 +327,10 @@ public class penView extends ImageView {
 		         }
 		         if(pixel!=0 && inputw<x){
 		        	 inputw=x;
-		        	 Log.d("pixels","whdth="+inputw);
 		         }
 		         if(pixel!=0 && inputh<y){
 		        	 inputh=y;
-		        	 Log.d("pixels","height="+inputh);
 		         }
-		         //if(pixel==0){
-		        	// pixels[x+y*width]=Color.GREEN;
-		         //}
-		         
-
-		        // pixels[x + y * width] = 0;//Color.argb(
-		                 //Color.alpha(pixel),
-		                 //0xFF - Color.red(pixel),
-		                 //0xFF - Color.green(pixel),
-		                 //0xFF - Color.blue(pixel));
-		         //if(x==15||x==16||x==17||x==18||x==19||x==20||x==21||x==22||x==23||x==24||x==25||x==26||x==27||x==28||x==29||x==30||x==31){
-		        	// pixels[x + y * width]=0;
-		        // }
 		     }
 		 }
 		 
@@ -393,12 +340,17 @@ public class penView extends ImageView {
 		 scv.drawBitmap(result, 0, 0, paint);
 		
 		 try {
+			//sd画像削除
+//				File file = new File(Environment.getExternalStorageDirectory() + "/Item/"+cameraname);
+//				file.delete();
+//				Log.d("testo01","file="+file);
 		 // sdcardフォルダを指定
-		 File root = new File("/data/data/com.android.fukuro/Item");
+		 File root = new File(Environment.getExternalStorageDirectory() + "/Item/");
 
 		 // 保存処理開始
 		 FileOutputStream fos = null;
-		 fos = new FileOutputStream(new File(root, "test02.png"));
+		 fos = new FileOutputStream(new File(root, cameraname));
+		 
 
 		 // jpegで保存
 		 robot2.compress(CompressFormat.PNG, 100, fos);

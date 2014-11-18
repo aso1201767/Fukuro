@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 
 public class MyPage extends Fragment{
 	 private TabLayout parent;
@@ -31,6 +33,11 @@ public class MyPage extends Fragment{
 	 private Timer mainTimer;					//タイマー用
 	 private MyTask mainTimerTask;		//タイマタスククラス
 	 private MyHandler mHandler = new MyHandler();   //UI Threadへのpost用ハンドラ
+	 private Bitmap _bm1=null;
+	 private Bitmap _bm2=null;
+	 private Bitmap _bm3=null;
+	 private Bitmap _bm4=null;
+	 
 	 
 	 class MyTask extends TimerTask {
 		 public void run() {
@@ -43,7 +50,9 @@ public class MyPage extends Fragment{
 					}else{
 						firstflg = true;
 					}
+					if(coordename.size()!=0){
 					selectedIndex = selectedIndex % coordename.size();
+					}
 					Log.d("タブ", "selectedIndex = " + selectedIndex);
 					Message msg1 = new Message();
 					msg1.what = selectedIndex;
@@ -65,6 +74,11 @@ public class MyPage extends Fragment{
 	        View view = inflater.inflate(R.layout.mypage, container, false);
 	        coordename =parent.mypage_db();
 	        topimage = parent.mypage_topimage();
+	        //if(_bm2!=null){
+	       // if(sbm2!=null){
+//	        	parent.setimage(R.id.imageView3,_bm2);
+//	        }
+	        //}
 	        return view;
 	    }
 	    
@@ -72,6 +86,8 @@ public class MyPage extends Fragment{
 		public void onStart() {
 			// TODO 自動生成されたメソッド・スタブ
 			super.onStart();
+			Log.d("Mapage", "onStart");
+			if(coordename!=null){
 			 handler = new MyHandler();
 		     Log.d("mTimer","開始");
 	         //タイマーの初期化処理
@@ -81,6 +97,7 @@ public class MyPage extends Fragment{
 			//タイマースケジュール設定＆開始
 			this.mainTimer.schedule(mainTimerTask, 0,6000);
 	         Log.d("Fragment","start");
+			}
 	         
 	    }
 
@@ -89,6 +106,32 @@ public class MyPage extends Fragment{
 		public void onResume() {
 			// TODO 自動生成されたメソッド・スタブ
 			super.onResume();
+			Log.d("Mapage", "onResume");
+			if(_bm1!=null){
+				Log.d("Mypage","topimage="+_bm1);
+				parent.setimage(R.id.topimage,_bm1);
+			}else{
+				if(dir.exists()){
+     	            File file = new File(dir.getAbsolutePath()+ "/" + topimage);
+     	            Log.d("mypage","top="+topimage);
+     	            if (file.exists()) {
+     	                    _bm1 = BitmapFactory.decodeFile(file.getPath());
+     	                    _bm1 = Bitmap.createScaledBitmap(_bm1, 400, 500, false);
+     	                    parent.setimage(R.id.topimage,_bm1);
+     	            }else{
+     	                //存在しない
+     	            }
+     	        } 
+			}
+			if(_bm2!=null){
+				parent.setimage(R.id.imageView3,_bm2);
+			}
+			if(_bm3!=null){
+				parent.setimage(R.id.imageView4,_bm3);
+			}
+			if(_bm4!=null){
+				parent.setimage(R.id.imageView2,_bm4);
+			}
 			
 		}
 
@@ -98,64 +141,71 @@ public class MyPage extends Fragment{
 			// TODO 自動生成されたメソッド・スタブ
 			super.onPause();
 			mainTimer.cancel();
+			Log.d("Mapage", "onPause");
 		}
 
+		
 		class MyHandler extends Handler{
         	@Override
         	public void handleMessage(Message msg1){
         		Log.d(TAG, "handleMessage:" + msg1.what);
-       
-	        		 if(dir.exists()){
-	     	            File file = new File(dir.getAbsolutePath()+ "/" + topimage);
-	     	            if (file.exists()) {
-	     	                    Bitmap _bm1 = BitmapFactory.decodeFile(file.getPath());
-	     	                    _bm1 = Bitmap.createScaledBitmap(_bm1, 400, 500, false);
-	     	                    parent.setimage(R.id.topimage,_bm1);
-	     	            }else{
-	     	                //存在しない
-	     	            }
-	     	        } 
-	        	
+//        		if(_bm1==null){
+//	        		 if(dir.exists()){
+//	     	            File file = new File(dir.getAbsolutePath()+ "/" + topimage);
+//	     	            if (file.exists()) {
+//	     	                    _bm1 = BitmapFactory.decodeFile(file.getPath());
+//	     	                    _bm1 = Bitmap.createScaledBitmap(_bm1, 400, 500, false);
+//	     	                    parent.setimage(R.id.topimage,_bm1);
+//	     	            }else{
+//	     	                //存在しない
+//	     	            }
+//	     	        } 
+//        		}
   
-
-    	        int index1 = msg1.what;
-        		index1 = index1 % coordename.size();
-    	        if(dir.exists()){
-    	            File file = new File(dir.getAbsolutePath()+ "/" + coordename.get(index1));
-    	            if (file.exists()) {
-    	                    Bitmap _bm2 = BitmapFactory.decodeFile(file.getPath());
-    	                    _bm2 = Bitmap.createScaledBitmap(_bm2, 230, 250, false);
-    	                    parent.setimage(R.id.imageView3,_bm2);
-    	            }else{
-    	                //存在しない
-    	            }
-    	        }  
-    	        int index2 = msg1.what;
-    	        index2 = index2 + 1;
-        		index2 = index2 % coordename.size();
-    	        if(dir.exists()){
-    	            File file = new File(dir.getAbsolutePath()+ "/" + coordename.get(index2));
-    	            if (file.exists()) {
-    	                    Bitmap _bm3 = BitmapFactory.decodeFile(file.getPath());
-    	                    _bm3 = Bitmap.createScaledBitmap(_bm3, 230, 250, false);
-    	                    parent.setimage(R.id.imageView4,_bm3);
-    	            }else{
-    	                //存在しない
-    	            }
-    	        }  
-    	        int index3 = msg1.what;
-        		index3 = index3 + 2;
-        		index3 = index3 % coordename.size();
-    	        if(dir.exists()){
-    	        	File file = new File(dir.getAbsolutePath()+ "/" + coordename.get(index3));
-    	            if (file.exists()) {
-    	                    Bitmap _bm4 = BitmapFactory.decodeFile(file.getPath());
-    	                    _bm4 = Bitmap.createScaledBitmap(_bm4, 230, 250, false);
-    	                    parent.setimage(R.id.imageView2,_bm4);
-    	            }else{
-    	                //存在しない
-    	            }
-    	        }
+        		if(coordename.size()!=0){
+	    	        int index1 = msg1.what;
+	        		index1 = index1 % coordename.size();
+	    	        if(dir.exists()){
+	    	            File file = new File(dir.getAbsolutePath()+ "/" + coordename.get(index1));
+	    	            if (file.exists()) {
+	    	                    _bm2 = BitmapFactory.decodeFile(file.getPath());
+	    	                    _bm2 = Bitmap.createScaledBitmap(_bm2, 230, 250, false);
+	    	                    parent.setimage(R.id.imageView3,_bm2);
+	    	            }else{
+	    	                //存在しない
+	    	            }
+	    	        }  
+        		}
+        		if(coordename.size()!=0){
+	    	        int index2 = msg1.what;
+	    	        index2 = index2 + 1;
+	        		index2 = index2 % coordename.size();
+	    	        if(dir.exists()){
+	    	            File file = new File(dir.getAbsolutePath()+ "/" + coordename.get(index2));
+	    	            if (file.exists()) {
+	    	                    _bm3 = BitmapFactory.decodeFile(file.getPath());
+	    	                    _bm3 = Bitmap.createScaledBitmap(_bm3, 230, 250, false);
+	    	                    parent.setimage(R.id.imageView4,_bm3);
+	    	            }else{
+	    	                //存在しない
+	    	            }
+	    	        } 
+        		}
+        		if(coordename.size()!=0){
+	    	        int index3 = msg1.what;
+	        		index3 = index3 + 2;
+	        		index3 = index3 % coordename.size();
+	    	        if(dir.exists()){
+	    	        	File file = new File(dir.getAbsolutePath()+ "/" + coordename.get(index3));
+	    	            if (file.exists()) {
+	    	                    _bm4 = BitmapFactory.decodeFile(file.getPath());
+	    	                    _bm4 = Bitmap.createScaledBitmap(_bm4, 230, 250, false);
+	    	                    parent.setimage(R.id.imageView2,_bm4);
+	    	            }else{
+	    	                //存在しない
+	    	            }
+	    	        }
+        		}
         	}
         }
 	    

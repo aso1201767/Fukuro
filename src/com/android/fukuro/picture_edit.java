@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -19,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
@@ -29,12 +30,16 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 public class picture_edit extends Activity {
 	private penView penview;
 	private Bitmap _bm;
-	public static SQLiteDatabase db;
-	SeekBar seekBar;
-	public Canvas mcanvas;
-	public RadioButton eraser;
-	public RadioButton cutting;
-	public RadioButton move;
+	private SeekBar seekBar;
+	private Canvas mcanvas;
+	private RadioButton eraser;
+	private RadioButton cutting;
+	private RadioButton move;
+	private AlertDialog.Builder alertDlg;
+	private String path = null;
+	private String picname = null;
+	private String previousview=null;
+	private String pen_mode=null;
 	private void setViewId(){
 		penview = (penView)findViewById(R.id.view1);
 	}
@@ -46,10 +51,69 @@ public class picture_edit extends Activity {
 		PreferenceManager
 				.getDefaultSharedPreferences(this);
 		setViewId();
-		
+		Log.d("picture_edit", "onCreate");
 		setTitle("画像編集");
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		penview.pen_mode="eraser";
-		    
+		Intent inte = getIntent();
+		path = inte.getStringExtra("Fpath");
+		picname = inte.getStringExtra("Fname");
+		previousview=inte.getStringExtra("previousview");
+		penview.previousview=previousview;
+		penview.camerapath=path;
+		penview.cameraname=picname;
+		Log.d("picture","picname="+picname);
+		if(previousview.equals("camera")){
+			// 確認ダイアログの生成
+	        alertDlg = new AlertDialog.Builder(this);
+	        alertDlg.setTitle("画像を保存しますか");
+	        //alertDlg.setMessage("");
+	        alertDlg.setPositiveButton(
+	            "OK",
+	            new DialogInterface.OnClickListener() {
+	                public void onClick(DialogInterface dialog, int which) {
+	                    // 上書き ボタンクリック処理
+	                	penview.saveBitmapToSd();
+	                	move();
+	                }
+	            });
+	        alertDlg.setNegativeButton(
+	        	"キャンセル",
+	            new DialogInterface.OnClickListener() {
+	                public void onClick(DialogInterface dialog, int which) {
+	                    // キャンセル ボタンクリック処理
+	                }
+	            });
+		}else{
+			// 確認ダイアログの生成
+	        alertDlg = new AlertDialog.Builder(this);
+	        alertDlg.setTitle("画像を保存しますか");
+	        //alertDlg.setMessage("");
+	        alertDlg.setPositiveButton(
+	            "上書き",
+	            new DialogInterface.OnClickListener() {
+	                public void onClick(DialogInterface dialog, int which) {
+	                    // 上書き ボタンクリック処理
+	                	penview.saveBitmapToSd();
+	                	move();
+	                }
+	            });
+	        alertDlg.setNeutralButton(
+	            "新規",
+	            new DialogInterface.OnClickListener() {
+	                public void onClick(DialogInterface dialog, int which) {
+	                    // 新規 ボタンクリック処理
+	                	move();
+	                }
+	            });
+	        alertDlg.setNegativeButton(
+	        	"キャンセル",
+	            new DialogInterface.OnClickListener() {
+	                public void onClick(DialogInterface dialog, int which) {
+	                    // キャンセル ボタンクリック処理
+	                }
+	            });
+		}   
 		File dir = new File("/data/data/com.android.fukuro/Item");
         if(dir.exists()){
             
@@ -57,7 +121,7 @@ public class picture_edit extends Activity {
             if (file.exists()) {
                     Bitmap bm2 = BitmapFactory.decodeFile(file.getPath());
                     Bitmap bm3 = Bitmap.createScaledBitmap(bm2,230,250,false);
-                    ((ImageView)findViewById(R.id.imageView2)).setImageBitmap(bm3); 
+                    //((ImageView)findViewById(R.id.imageView2)).setImageBitmap(bm3); 
             }else{
                 //存在しない
             }
@@ -88,7 +152,9 @@ public class picture_edit extends Activity {
 				    }
 				  //mcanvas.drawColor(Color.BLACK);
 				 	//一つ戻る
+				    if(pen_mode!="move"){
 					penview.undo();
+				    }
 			 	}
 		 });
 		   
@@ -131,21 +197,29 @@ public class picture_edit extends Activity {
 	                RadioButton radioButton = (RadioButton)findViewById(checkedId);
 	                if(radioButton.getId() == eraser.getId()) {
 	                	penview.pen_mode="eraser";
+	                	pen_mode="eraser";
 	                	Log.d("ラジオボタン","消しゴムを押した");
 	                }else if(radioButton.getId()==cutting.getId()){
 	                	penview.pen_mode="cutting";
+	                	pen_mode="cutting";
 	                	Log.d("ラジオボタン","ハサミを押した");
 	                }else if(radioButton.getId()==move.getId()){
 	                	penview.pen_mode="move";
+	                	pen_mode="move";
 	                	Log.d("ラジオボタン","移動を押した");
 	                }
 	            }
 	        });
 	}
 
+	
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
+		path = null;
+		picname = null;
+		previousview=null;
+		pen_mode=null;
 	}
 
 	@Override
@@ -161,79 +235,18 @@ public class picture_edit extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.save) {
-			View imageView = (View) findViewById(R.id.view1);
-			  _bm = Bitmap.createBitmap(imageView.getWidth(), imageView.getHeight(), Bitmap.Config.ARGB_8888);
-			  mcanvas = new Canvas(_bm);
-			  mcanvas.drawColor(Color.argb(0, 0, 0, 0));
-			  
-			  File dir = new File("/data/data/com.android.fukuro/Item");
-			    if(dir.exists()){
-			        File file = new File(dir.getAbsolutePath()+"/item_all4.png");
-			        if (file.exists()) {
-			                Bitmap bm6 = BitmapFactory.decodeFile(file.getPath());
-			                //((ImageView)findViewById(R.id.imageView1)).setImageBitmap(_bm); 
-			                mcanvas.drawBitmap(bm6, 0, 0, null);
-			                
-			        }else{
-			            //存在しない
-			        }
-			        
-			    }
-			ArrayList<Path> draw_list=penview.capview();
-			ArrayList<Float> paint_width = penview.paint_width();
-			Paint paint = new Paint();
-			//paint.setXfermode(new PorterDuffXfermode(android.graphics.PorterDuff.Mode.CLEAR));
-		    paint.setColor(Color.RED);
-			 //paint.setAntiAlias(true);
-			 paint.setStyle(Paint.Style.STROKE);
-			 paint.setStrokeWidth(10);
-			 paint.setStrokeCap(Paint.Cap.ROUND);
-			 paint.setStrokeJoin(Paint.Join.ROUND);
-			 
-			 for (int i = 0; i < draw_list.size(); i++) {
-				 System.out.println("onDraw called.");
-				 Path pt = draw_list.get(i);
-				 Float paint_w = paint_width.get(i);
-				 paint.setStrokeWidth(paint_w);
-				 mcanvas.drawPath(pt, paint);//全ての線を描く
-				 Log.d("paint","01");
-			 }
-			 int width = _bm.getWidth();
-			 int height = _bm.getHeight();
-			 int pixels[] = new int[width * height];
-
-			 _bm.getPixels(pixels, 0, width, 0, 0, width, height);
-
-			 for (int y = 0; y < height; y++) {
-			     for (int x = 0; x < width; x++) {
-			         int pixel = pixels[x + y * width];
-			         if(pixel==Color.RED){
-			        	 pixels[x + y * width] = 0;
-			         }
-			         //if(pixel==0){
-			        	// pixels[x+y*width]=Color.GREEN;
-			         //}
-			         
-
-			        // pixels[x + y * width] = 0;//Color.argb(
-			                 //Color.alpha(pixel),
-			                 //0xFF - Color.red(pixel),
-			                 //0xFF - Color.green(pixel),
-			                 //0xFF - Color.blue(pixel));
-			         //if(x==15||x==16||x==17||x==18||x==19||x==20||x==21||x==22||x==23||x==24||x==25||x==26||x==27||x==28||x==29||x==30||x==31){
-			        	// pixels[x + y * width]=0;
-			        // }
-			     }
-			 }
-			 
-			 _bm.setPixels(pixels, 0, width, 0, 0, width, height);
-			//saveBitmapToSd(_bm);
-			 penview.saveBitmapToSd();
+		if(id == android.R.id.home){
+            finish();  
+            return true;  
+		}else if (id == R.id.save) {
+			// 表示
+		     alertDlg.create().show();
+			 //penview.saveBitmapToSd();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
 	
 	public void saveBitmapToSd(Bitmap mBitmap) {
 		
@@ -253,5 +266,17 @@ public class picture_edit extends Activity {
 		 } catch (Exception e) {
 		 Log.e("Error", "" + e.toString());
 		 }
+	}
+	public void move(){
+		if(previousview.equals("camera")){//前画面がカメラの場合
+			Intent intent = new Intent(this, InfoEditActivity.class);
+			String view ="picture";
+			intent.putExtra("Fpath", path);
+			intent.putExtra("Fname", picname);
+			intent.putExtra("previousview", view);
+			startActivity(intent);
+		}else{
+			
+		}
 	}
 }

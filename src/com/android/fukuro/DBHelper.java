@@ -1,8 +1,12 @@
 package com.android.fukuro;
 
+import java.util.ArrayList;
+
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
 	private final static String DB_NAME = "fukuro.db";
@@ -38,7 +42,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		// マイリストテーブル
 		String sql4 = "CREATE TABLE Mylist ( " +
 				"mylist_id TEXT, " +
-				"thambnail TEXT NOT NULL, " +
+				"mylist TEXT NOT NULL, " +
 				"maked TEXT NOT NULL," +
 				"favorite TEXT NOT NULL," +
 				"PRIMARY KEY(mylist_id))";
@@ -46,12 +50,16 @@ public class DBHelper extends SQLiteOpenHelper {
 		String sql5 = "CREATE TABLE Mylistmaking ( " +
 				"mylist_id TEXT, " +
 				"item_id TEXT, " +
-				"item_position TEXT NOT NULL, " +
+				"item_position_R TEXT NOT NULL, " +
+				"item_position_L TEXT NOT NULL, " +
+				"item_position_T TEXT NOT NULL, " +
+				"item_position_B TEXT NOT NULL, " +
 				"item_priority TEXT NOT NULL, " +
 				"magni TEXT NOT NULL, " +
 				"PRIMARY KEY(mylist_id,item_id), " +
 				"FOREIGN KEY(mylist_id)REFERENCES Mylist(mylist_id), " +
 				"FOREIGN KEY(item_id)REFERENCES Item(item_id))";
+		
 		// ランキングテーブル
 		String sql6 = "CREATE TABLE Ranking ( " +
 				"ranking_id TEXT, " +
@@ -72,11 +80,6 @@ public class DBHelper extends SQLiteOpenHelper {
 		db.execSQL(sql6);
 		
 		//データ挿入
-		// ユーザテーブ
-		db.execSQL("INSERT INTO User(user_id,user_name) VALUES('0000001','相沢')");
-		db.execSQL("INSERT INTO User(user_id,user_name) VALUES('0000002','宍戸')");
-		db.execSQL("INSERT INTO User(user_id,user_name) VALUES('0000003','父さん')");
-		db.execSQL("INSERT INTO User(user_id,user_name) VALUES('0000004','笹井')");
 		// カテゴリテーブル
 		db.execSQL("INSERT INTO Category(category_id,category_name) VALUES('1','Tシャツ')");
 		db.execSQL("INSERT INTO Category(category_id,category_name) VALUES('2','シャツ')");
@@ -85,20 +88,49 @@ public class DBHelper extends SQLiteOpenHelper {
 		db.execSQL("INSERT INTO Category(category_id,category_name) VALUES('5','パンツ')");
 		db.execSQL("INSERT INTO Category(category_id,category_name) VALUES('6','ショートパンツ')");
 		db.execSQL("INSERT INTO Category(category_id,category_name) VALUES('7','全身')");
-
-		db.execSQL("INSERT INTO Mylist(mylist_id,thambnail,maked,favorite) VALUES('01','item_Tshats1.png','2014/11/04 11:13:21','false')");
-		db.execSQL("INSERT INTO Mylist(mylist_id,thambnail,maked,favorite) VALUES('02','item_Tshats2.png','2014/10/04 11:13:22','false')");
-		db.execSQL("INSERT INTO Mylist(mylist_id,thambnail,maked,favorite) VALUES('03','item_Tshats3.png','2014/11/04 11:13:23','false')");
-		db.execSQL("INSERT INTO Mylist(mylist_id,thambnail,maked,favorite) VALUES('04','item_all1.png','2014/11/02 11:14:23','true')");
-		db.execSQL("INSERT INTO Mylist(mylist_id,thambnail,maked,favorite) VALUES('05','item_all2.png','2014/11/04 10:14:23','false')");
-		db.execSQL("INSERT INTO Mylist(mylist_id,thambnail,maked,favorite) VALUES('06','item_all3.png','2014/11/04 10:24:23','false')");
-		
-		db.execSQL("INSERT INTO Item(item_id,item,category_id,memo) VALUES('0001','Testo01.png','7','')");
-		
 		
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+	}
+	
+	public void InsertItem(SQLiteDatabase db, String name, String category, String memo){
+		String picpath = name;
+		String categorynum = category;
+		String memovalue = memo;
+
+		ArrayList<String> ItemList = new ArrayList<String>();
+
+		String sql2 = "select Item_id from Item order by Item_id";
+
+		Cursor c2 = db.rawQuery(sql2, null);
+
+		c2.moveToFirst();
+
+		for(int i = 0; i < c2.getCount(); i++){
+			ItemList.add(c2.getString(0));
+			c2.moveToNext();
+		}
+
+		int j = 0;
+		String ID = null;
+
+		for(j = 0; j < ItemList.size(); j++){
+
+			if(!(ItemList.get(j).equals(String.format("%04d",j + 1)))){
+				Log.d("check1",String.format("%04d", j + 1));
+				Log.d("check2",ItemList.get(j));
+
+				break;
+			}
+		}
+
+		ID = String.format("%04d", j + 1);
+
+		ItemList = new ArrayList<String>();
+
+		String sql = "INSERT INTO Item(item_id,item, category_id, memo) VALUES(\""+ ID +"\",\"" + picpath + "\",\"" + categorynum + "\",\"" + memovalue +"\")";
+		db.execSQL(sql);
 	}
 }

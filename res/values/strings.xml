@@ -2,8 +2,11 @@
 <resources>
 
     <string name="app_name">Fukuro</string>
+    <string name="icon_name">フクロー</string>
     <string name="back">戻る</string>
     <string name="save">保存</string>
     <string name="picture_edit_lbl">消しゴム倍率調整</string>
+    <string name="menu_btn1">所持服一覧</string>
+    <string name="menu_btn2">コーディネート</string>
 
 </resources>
