@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:gravity="center"
+    android:padding="1dp" >
+
+    <ImageView
+        android:id="@+id/imageview"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="#FFFFFF"
+        android:clickable="false"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/favo"
+        android:layout_width="20dp"
+        android:layout_height="25dp"
+        android:layout_alignRight="@+id/imageview"
+        android:layout_alignTop="@+id/imageview"
+        android:src="@drawable/star" />
+
+</RelativeLayout>
