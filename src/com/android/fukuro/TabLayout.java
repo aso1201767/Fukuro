@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
@@ -22,7 +21,10 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,6 +44,7 @@ public class TabLayout extends Activity{
 	private List<String> imgList = new ArrayList<String>();
 	private List<Integer> filename = new ArrayList<Integer>();
 	private List<String> favoList = new ArrayList<String>();
+	private static final int ITEM1 = Menu.FIRST;
 	Fragment MylistFragment;
 	boolean mylist_flg =false;
 	
@@ -49,20 +52,20 @@ public class TabLayout extends Activity{
 	  protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.tab_main);
-	    
+	  
 	    final ActionBar actionBar = getActionBar();
 	    actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-	    int color = R.color.action_bar_background;
+	    int color = R.color.actionbar_background;
 	    Drawable backgroundDrawable = getApplicationContext().getResources().getDrawable(color);
 	    actionBar.setBackgroundDrawable(backgroundDrawable);
+	    
 	    second = new MainTabListener<MenuFragment>(this, MenuFragment.class);
-	 
-
+	  
 	 // タブにリスナーを追加する
         createTab(actionBar, new MainTabListener<MyPage>(this, MyPage.class),R.layout.tab_mypage, R.id.tab_mypage_title, "MyPage");
-        createTab(actionBar, second,R.layout.tab_style, R.id.tab_style_title,"STYLE");
-        createTab(actionBar, new MainTabListener<Fragment2>(this, Fragment2.class),R.layout.tab_wear, R.id.tab_wear_title,"WEAR");
-        createTab(actionBar, new MainTabListener<FirstFragment>(this, FirstFragment.class),R.layout.tab_photo, R.id.tab_photo_title,"PHOTO");
+        createTab(actionBar, second,R.layout.tab_wear, R.id.tab_wear_title,"WEAR");
+        createTab(actionBar, new MainTabListener<RankingMenu>(this, RankingMenu.class),R.layout.tab_style, R.id.tab_style_title,"STYLE");
+        createTab(actionBar, new MainTabListener<Camera>(this, Camera.class),R.layout.tab_photo, R.id.tab_photo_title,"PHOTO");
         // デフォルトの状態選択を変更する
         actionBar.setSelectedNavigationItem(0);
 	    }
@@ -80,16 +83,19 @@ public class TabLayout extends Activity{
 	}
 
 	void move(Class<?> move,String id,Integer value) {
+		Log.d("move","move="+move);
         intent = new Intent(this, move);
-        if(!id.equals(null)){
+        if(id!=null){
         	intent.putExtra(id, value);
         }
+        Log.d("move","move2");
         startActivity(intent);
+        Log.d("move","move3");
     }
-	void move2(){
-		intent = new Intent(getApplicationContext(),Uplist.class);
-		startActivity(intent);
-	}
+//	void move2(){
+//		intent = new Intent(getApplicationContext(),Uplist.class);
+//		startActivity(intent);
+//	}
 	void camera(){
 //		//インテントに、この画面と、遷移する別の画面を指定する
 //		intent = new Intent(this, CameraActivity.class);
@@ -182,7 +188,8 @@ public class TabLayout extends Activity{
 		//プラスボタン画像をfileListに挿入
 
 		for(int cnt = 1; cnt <= cr.getCount(); cnt++){
-			destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(1);
+//			destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(1);
+			destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(1);
 			System.out.println(cr.getString(1));
 
 			// List<String> imgList にはファイルのパスを入れる
@@ -201,6 +208,9 @@ public class TabLayout extends Activity{
 	
 	public GridView setgrid(){
 		return  (GridView) findViewById(R.id.gridview);
+	}
+	public ImageButton setImageButton(int imageButton){
+		return (ImageButton) findViewById(imageButton);
 	}
 	
 	public Context getC(){
@@ -274,6 +284,7 @@ public class TabLayout extends Activity{
 	    @Override
 	    public void onTabUnselected(Tab tab, FragmentTransaction ft) {
 	    	if(_fragment != null){
+	    		_fragment.onStop();
 	    		ft.detach(_fragment);
 	    	}
 	    	if(mylist_flg){
@@ -293,5 +304,31 @@ public class TabLayout extends Activity{
 	        }
 	    }
 	    return super.dispatchKeyEvent(event);
+	}
+	
+	@Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // Disable Back key
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.top_menu, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if(id == R.id.btn_up){
+			intent=new Intent(this,Uplist.class);
+			startActivity(intent);
+            return true;  
+		}
+		return super.onOptionsItemSelected(item);
 	}
 }

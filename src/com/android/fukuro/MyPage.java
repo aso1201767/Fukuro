@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -37,7 +38,6 @@ public class MyPage extends Fragment{
 	 private Bitmap _bm2=null;
 	 private Bitmap _bm3=null;
 	 private Bitmap _bm4=null;
-	 
 	 
 	 class MyTask extends TimerTask {
 		 public void run() {
@@ -112,7 +112,7 @@ public class MyPage extends Fragment{
 				parent.setimage(R.id.topimage,_bm1);
 			}else{
 				if(dir.exists()){
-     	            File file = new File(dir.getAbsolutePath()+ "/" + topimage);
+     	            File file = new File(Environment.getExternalStorageDirectory() + "/Item/" + topimage);
      	            Log.d("mypage","top="+topimage);
      	            if (file.exists()) {
      	                    _bm1 = BitmapFactory.decodeFile(file.getPath());
@@ -166,7 +166,7 @@ public class MyPage extends Fragment{
 	    	        int index1 = msg1.what;
 	        		index1 = index1 % coordename.size();
 	    	        if(dir.exists()){
-	    	            File file = new File(dir.getAbsolutePath()+ "/" + coordename.get(index1));
+	    	            File file = new File(Environment.getExternalStorageDirectory() + "/Item/"+ coordename.get(index1));
 	    	            if (file.exists()) {
 	    	                    _bm2 = BitmapFactory.decodeFile(file.getPath());
 	    	                    _bm2 = Bitmap.createScaledBitmap(_bm2, 230, 250, false);
@@ -181,7 +181,7 @@ public class MyPage extends Fragment{
 	    	        index2 = index2 + 1;
 	        		index2 = index2 % coordename.size();
 	    	        if(dir.exists()){
-	    	            File file = new File(dir.getAbsolutePath()+ "/" + coordename.get(index2));
+	    	            File file = new File(Environment.getExternalStorageDirectory() + "/Item/" + coordename.get(index2));
 	    	            if (file.exists()) {
 	    	                    _bm3 = BitmapFactory.decodeFile(file.getPath());
 	    	                    _bm3 = Bitmap.createScaledBitmap(_bm3, 230, 250, false);
@@ -196,7 +196,7 @@ public class MyPage extends Fragment{
 	        		index3 = index3 + 2;
 	        		index3 = index3 % coordename.size();
 	    	        if(dir.exists()){
-	    	        	File file = new File(dir.getAbsolutePath()+ "/" + coordename.get(index3));
+	    	        	File file = new File(Environment.getExternalStorageDirectory() + "/Item/" + coordename.get(index3));
 	    	            if (file.exists()) {
 	    	                    _bm4 = BitmapFactory.decodeFile(file.getPath());
 	    	                    _bm4 = Bitmap.createScaledBitmap(_bm4, 230, 250, false);

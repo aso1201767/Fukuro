@@ -40,6 +40,7 @@ public class picture_edit extends Activity {
 	private String picname = null;
 	private String previousview=null;
 	private String pen_mode=null;
+	String info="pic";
 	private void setViewId(){
 		penview = (penView)findViewById(R.id.view1);
 	}
@@ -62,7 +63,9 @@ public class picture_edit extends Activity {
 		penview.previousview=previousview;
 		penview.camerapath=path;
 		penview.cameraname=picname;
+		penview.info=info;
 		Log.d("picture","picname="+picname);
+		Log.d("picture","info="+info );
 		if(previousview.equals("camera")){
 			// 確認ダイアログの生成
 	        alertDlg = new AlertDialog.Builder(this);
@@ -241,6 +244,8 @@ public class picture_edit extends Activity {
 		}else if (id == R.id.save) {
 			// 表示
 		     alertDlg.create().show();
+		     info="info";
+		     penview.info=info;
 			 //penview.saveBitmapToSd();
 			return true;
 		}

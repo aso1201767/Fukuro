@@ -50,6 +50,7 @@ public class penView extends ImageView {
 	String camerapath=null;
 	FileInputStream in = null;
 	String cameraname=null;
+	String info=null;
 
 	// タッチの状態管理
 	private static final int TOUCH_NONE = 0;
@@ -92,7 +93,12 @@ public class penView extends ImageView {
 //			source = BitmapFactory.decodeResource(r, R.drawable.cutting);
 			//mbitmap = BitmapFactory.decodeResource(r, R.drawable.cutting_on);
 			BitmapFactory.Options options= new BitmapFactory.Options();
+			if(info.equals("pic")){
 			options.inSampleSize = 5;
+			}else{
+				options.inSampleSize = 1;
+			}
+			
 			source= BitmapFactory.decodeStream(in,null,options);
 			canvas.drawBitmap(source, imgMatrix, null);
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="actionbar_background">#555555</color>
+    <color name="actionbar_background">#6DCAEC</color>
     <color name="actionbar_background2">#444444</color>
     <color name="actionbar_text">#FFFFFF</color>
     <color name="tab_unselected">#A8DFF4</color>
-    <color name="tab_selected">#6DCAEC</color>
+    <color name="tab_selected">#8AD5F0</color>
     <color name="white">#8AD5F0</color>
     <color name="tab_title_unselected">#FFFFFF</color>
     <color name="tab_title_selected">#000000</color>

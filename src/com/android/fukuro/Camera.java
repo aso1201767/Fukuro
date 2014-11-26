@@ -9,13 +9,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.view.View.OnClickListener;
 
-public class FirstFragment extends Fragment{
+public class Camera extends Fragment{
 	 private TabLayout parent;
 
 	    @Override
 	    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-	        View view = inflater.inflate(R.layout.first_fragment, container, false);
-	        parent.camera();
+	        View view = inflater.inflate(R.layout.camera, container, false);
+	        Button btnMove = (Button) view.findViewById(R.id.next);
+	        btnMove.setOnClickListener(new OnClickListener() {
+
+	            @Override
+	            public void onClick(View v) {
+	            	parent.camera();
+	            }
+	        });
+	        
 	        return view;
 	    }
 	    
