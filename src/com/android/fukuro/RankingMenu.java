@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class RankingMenu extends Fragment implements View.OnClickListener,DownloadImageTaskCallback {
+public class RankingMenu extends DialogFragment implements View.OnClickListener,DownloadImageTaskCallback {
 
 	AlertDialog.Builder errorD;
 	public TabLayout tabLayout;
@@ -42,7 +43,8 @@ public class RankingMenu extends Fragment implements View.OnClickListener,Downlo
 	@Override
 	public void onResume(){
         super.onResume();
-        context = tabLayout.getC();
+        //context = tabLayout.getC();
+        context = getActivity();
         DownloadImage();
         errorD = new AlertDialog.Builder(context);
       //イメージボタンの設定
@@ -84,10 +86,10 @@ public class RankingMenu extends Fragment implements View.OnClickListener,Downlo
 		// TODO 自動生成されたメソッド・スタブ
 		switch(v.getId()){//どのボタンが押されたか判定
 		case R.id.btnRank://btnRankが押された
-			tabLayout.move(Top50Activity.class,null,null);
+			tabLayout.move(Top30Activity.class,null,null);
 			break;
 		case R.id.btnLater://btnLaterが押された
-			tabLayout.move(Later50Activity.class,null,null);
+			tabLayout.move(Later30Activity.class,null,null);
 			break;
 		}
 	}

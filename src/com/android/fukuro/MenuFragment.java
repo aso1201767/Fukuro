@@ -16,9 +16,19 @@ public class MenuFragment extends Fragment{
 	 @Override
 	    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 	        View view = inflater.inflate(R.layout.menu_fragment, container, false);
-	        Button btnMove = (Button) view.findViewById(R.id.menu_btn2);
-	        btnMove.setOnClickListener(new OnClickListener() {
+	        
+	        Button btnMoveItem = (Button) view.findViewById(R.id.menu_btn1);
+	        Button btnMoveMylist= (Button) view.findViewById(R.id.menu_btn2);
+	        
+	        btnMoveItem.setOnClickListener(new OnClickListener() {
 
+	            @Override
+	            public void onClick(View v) {
+	            	parent.itemMylist();
+	            }
+	        });
+	        
+	        btnMoveMylist.setOnClickListener(new OnClickListener() {
 	            @Override
 	            public void onClick(View v) {
 	            	parent.mylist();

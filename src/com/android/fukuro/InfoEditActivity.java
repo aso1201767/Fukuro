@@ -45,6 +45,7 @@ public class InfoEditActivity extends Activity implements View.OnClickListener{
 	String picname = null;
 	String category = null;
 	String previousview=null;
+	Integer id=0;
 	private ArrayList<String> ItemList = new ArrayList<String>();
 
 	@Override
@@ -72,8 +73,16 @@ public class InfoEditActivity extends Activity implements View.OnClickListener{
 		Intent inte = getIntent();
 		path = inte.getStringExtra("Fpath");
 		picname = inte.getStringExtra("Fname");
+		previousview = inte.getStringExtra("previousview");
+		
+		if(previousview.equals("itemDetails")){//前画面がitemDetails
+			id=inte.getIntExtra("id", 0);
+			memo = inte.getStringExtra("memo");
+			text1.setText(memo);
+		}
+		
 		Log.d("check",path);
-		Log.d("check",picname);
+		Log.d("check2",""+previousview);
 
         text1.addTextChangedListener(watchHandler);
 
@@ -88,11 +97,7 @@ public class InfoEditActivity extends Activity implements View.OnClickListener{
 		BitmapFactory.Options options
 			= new BitmapFactory.Options();
 		options.inSampleSize =1;
-		Bitmap capturedImage
-			= BitmapFactory.decodeStream(
-				in,
-				null,
-				options);
+		Bitmap capturedImage= BitmapFactory.decodeStream(in,null,options);
 		
 		capturedImage = Bitmap.createScaledBitmap(capturedImage, 350, 350, false);
 
@@ -111,6 +116,16 @@ public class InfoEditActivity extends Activity implements View.OnClickListener{
 
          Spinner spinner = (Spinner)this.findViewById(R.id.Spinner01);
          spinner.setAdapter(new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, list));
+         
+//         if(tempo_prefecture != null){
+        if(previousview.equals("itemDetails")){//前画面がitemDetails
+        	String category=inte.getStringExtra("Fpath");
+        	category="シャツ";
+        	ArrayAdapter<String> myAdap = (ArrayAdapter) spinner.getAdapter();
+        	int spinnerPosition = myAdap.getPosition(category);
+            spinner.setSelection(spinnerPosition);
+        }	  		    
+//        	} 
 
          spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         	    // アイテムが選択された時の動作
@@ -191,25 +206,26 @@ public class InfoEditActivity extends Activity implements View.OnClickListener{
 			break;
 
 		case R.id.button2:
-			//sd画像削除
-			File file = new File(path);
-			file.delete();
-			Toast t = Toast.makeText(this, "ファイルを削除しました", Toast.LENGTH_LONG);
-			t.show();
-			//インテントで指定した別の画面に遷移する
-
+			if(previousview.equals("itemDetails")){//前画面がitemDetails
+				
+			}else{
+				//sd画像削除
+				File file = new File(path);
+				file.delete();
+				Toast t = Toast.makeText(this, "ファイルを削除しました", Toast.LENGTH_LONG);
+				t.show();
+				//インテントで指定した別の画面に遷移する
+			}
 			break;
 		}
 		
-		Intent inte = getIntent();
-		previousview = inte.getStringExtra("previousview");
 		if(previousview.equals("picture")){//前画面が画像編集処理
 			//インテントに、この画面と、遷移する別の画面を指定する
 			movein = new Intent(InfoEditActivity.this, TabLayout.class);
+			startActivity(movein);
 		}else{
-			
+			finish();
 		}
-		startActivity(movein);
 	}
 
 	@Override

@@ -46,11 +46,12 @@ public class penView extends ImageView {
 	private Bitmap result;// 描画領域
 	private boolean f = true;
 	private Bitmap capturedImage;
-	String previousview=null;//全画面
+	String previousview=null;//前画面
 	String camerapath=null;
 	FileInputStream in = null;
-	String cameraname=null;
+	String picname=null;
 	String info=null;
+	
 
 	// タッチの状態管理
 	private static final int TOUCH_NONE = 0;
@@ -74,27 +75,28 @@ public class penView extends ImageView {
 
 	protected void onDraw(Canvas canvas) {
 		Log.i("test","onDraw");
-		if(previousview.equals("camera")){
+//		if(previousview.equals("camera")){
 			try {
 				in = new FileInputStream(camerapath);
 			} catch (FileNotFoundException e) {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
 			}
-		}else{
-		}
+//		}else{
+//		}
 		super.onDraw(canvas);
 		if (pen_mode == "move") {
 			//setImageBitmap(result);
 		} else {
+			
 			canvas.drawColor(Color.argb(255, 0, 0, 0));
 			Resources r = getResources();
 //			Bitmap bmp = BitmapFactory.decodeResource(r, R.drawable.cutting_on);
 //			source = BitmapFactory.decodeResource(r, R.drawable.cutting);
-			//mbitmap = BitmapFactory.decodeResource(r, R.drawable.cutting_on);
+//			mbitmap = BitmapFactory.decodeResource(r, R.drawable.cutting_on);
 			BitmapFactory.Options options= new BitmapFactory.Options();
 			if(info.equals("pic")){
-			options.inSampleSize = 5;
+				options.inSampleSize = 5;	
 			}else{
 				options.inSampleSize = 1;
 			}
@@ -344,10 +346,12 @@ public class penView extends ImageView {
 		 robot2= Bitmap.createBitmap(inputw+10, inputh+10, Config.ARGB_8888);
 		 scv = new Canvas(robot2);
 		 scv.drawBitmap(result, 0, 0, paint);
+		 
+		 
 		
 		 try {
 			//sd画像削除
-//				File file = new File(Environment.getExternalStorageDirectory() + "/Item/"+cameraname);
+//				File file = new File(Environment.getExternalStorageDirectory() + "/Item/"+picname);
 //				file.delete();
 //				Log.d("testo01","file="+file);
 		 // sdcardフォルダを指定
@@ -355,7 +359,7 @@ public class penView extends ImageView {
 
 		 // 保存処理開始
 		 FileOutputStream fos = null;
-		 fos = new FileOutputStream(new File(root, cameraname));
+		 fos = new FileOutputStream(new File(root,picname));
 		 
 
 		 // jpegで保存

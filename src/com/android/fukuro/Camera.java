@@ -2,6 +2,8 @@ package com.android.fukuro;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +22,39 @@ public class Camera extends Fragment{
 
 	            @Override
 	            public void onClick(View v) {
-	            	parent.camera();
+	            	parent.first_camera();
+//	            	parent.camera();
 	            }
 	        });
-	        
+	      
 	        return view;
 	    }
+	    
+	  //プリファレンス  
+	    private SharedPreferences preference;  
+	    private Editor editor;  
+	   
+//	    @Override  
+//	    public void onCreate(Bundle savedInstanceState) {  
+//	        super.onCreate(savedInstanceState);  
+//	        setContentView(R.layout.main);  
+//	   
+//	        //プリファレンスの準備  
+//	        preference = getSharedPreferences("Preference Name", MODE_PRIVATE);  
+//	        editor = preference.edit();  
+//	   
+//	        if (preference.getBoolean("Launched", false)==false) {  
+//	            //初回起動時の処理  
+//	   
+//	            //プリファレンスの書き変え  
+//	            editor.putBoolean("Launched", true);  
+//	            editor.commit();  
+//	        } else {  
+//	            //二回目以降の処理  
+//	   
+//	        }  
+//	                   
+//	    } 
 	    
 
 	    @Override

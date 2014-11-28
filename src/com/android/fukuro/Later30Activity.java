@@ -23,7 +23,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class Later50Activity extends Activity implements OnItemClickListener,DownloadImageTaskCallback,GoodAsyncTaskCallback{
+public class Later30Activity extends Activity implements OnItemClickListener,DownloadImageTaskCallback,GoodAsyncTaskCallback{
 	// 要素をArrayListで設定
 	private List<Bitmap> imgList;
 	private List<String> fnList;
@@ -31,11 +31,12 @@ public class Later50Activity extends Activity implements OnItemClickListener,Dow
 	public static SQLiteDatabase db;
 	AlertDialog.Builder errorD;
 	private int goodPosition;
+	Bitmap bmp;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.later50);
+		setContentView(R.layout.later30);
 		
 		db = dbHelper.getReadableDatabase();
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -48,7 +49,7 @@ public class Later50Activity extends Activity implements OnItemClickListener,Dow
 
 	public void DownloadImage(){
 		DownloadImageTask dit = new DownloadImageTask(this, this);
-	    dit.execute("later50");
+	    dit.execute("later30");
 	}
 	
 	public void postGood(String filename){
@@ -109,6 +110,8 @@ public class Later50Activity extends Activity implements OnItemClickListener,Dow
 		// TODO 自動生成されたメソッド・スタブ
 		super.onDestroy();
 		dbHelper.close();
+		imgList=null;
+		fnList=null;
 	}
 
 	class ViewHolder {
@@ -142,10 +145,9 @@ public class Later50Activity extends Activity implements OnItemClickListener,Dow
 			}
 
 			//プラスボタン以外の画像読み出し
-			Bitmap bmp = imgList.get(position);
+			bmp = imgList.get(position);
 			bmp = Bitmap.createScaledBitmap(bmp, 120, 160, true);
 			holder.imageView.setImageBitmap(bmp);
-			
 			return convertView;
 		}
 

@@ -50,10 +50,10 @@ public class DBHelper extends SQLiteOpenHelper {
 		String sql5 = "CREATE TABLE Mylistmaking ( " +
 				"mylist_id TEXT, " +
 				"item_id TEXT, " +
-				"item_position_R TEXT NOT NULL, " +
-				"item_position_L TEXT NOT NULL, " +
-				"item_position_T TEXT NOT NULL, " +
-				"item_position_B TEXT NOT NULL, " +
+				"item_position_R INTEGER NOT NULL, " +
+				"item_position_L INTEGER NOT NULL, " +
+				"item_position_T INTEGER NOT NULL, " +
+				"item_position_B INTEGER NOT NULL, " +
 				"item_priority TEXT NOT NULL, " +
 				"magni TEXT NOT NULL, " +
 				"PRIMARY KEY(mylist_id,item_id), " +

@@ -86,8 +86,12 @@ public class DownloadImageTask
 	  	    	  url = new URL("http://koyoshi.php.xdomain.jp/item/"+ fnList.get(i));
 	  	    	  //インプットストリームで画像を読み込む
 	  	    	  istream = url.openStream();
+	  	    	  BitmapFactory.Options opt = new BitmapFactory.Options();
+	  	    	  //解像度
+//	  	    	  opt.inSampleSize=2;
+	  	    	  opt.inPurgeable=true;
 	  	    	  //読み込んだファイルをビットマップに変換
-	  	    	  oBmp = BitmapFactory.decodeStream(istream);
+	  	    	  oBmp = BitmapFactory.decodeStream(istream,null,opt);
 	  	    	  //インプットストリームを閉じる
 	  	    	  istream.close();
 	  	    	  bmList.add(i,oBmp);
@@ -104,23 +108,27 @@ public class DownloadImageTask
   }
 
   protected void onPostExecute(String result) {
-//    if(dialog != null){
-//      dialog.dismiss();
-//    }
+    if(dialog != null){
+      dialog.dismiss();
+    }
     if (result == null) {
         // エラーをコールバックで返す
         callback.onFailedDownloadImage();
       }else{
         // ダウンロードした画像をコールバックで返す
         callback.onSuccessDownloadImage(bmList,fnList);
+        bmList=null;
+        fnList=null;
     }
   }
+  
 
   @Override
   protected void onPreExecute() {
-//    dialog = new ProgressDialog(this.context);
-//    dialog.setTitle("Please wait");
-//    dialog.setMessage("Downloading...");
-//    dialog.show();
+    dialog = new ProgressDialog(this.context);
+    dialog.setTitle("Please wait");
+    dialog.setMessage("Downloading...");
+    dialog.setCanceledOnTouchOutside(false);
+    dialog.show();
   }  
 }

@@ -11,6 +11,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -44,14 +46,23 @@ public class TabLayout extends Activity{
 	private List<String> imgList = new ArrayList<String>();
 	private List<Integer> filename = new ArrayList<Integer>();
 	private List<String> favoList = new ArrayList<String>();
+	private List<Integer> itemid = new ArrayList<Integer>();
+	private List<String> memoList = new ArrayList<String>();
+	private List<String> nameList = new ArrayList<String>();
+	private List<String> categoryList = new ArrayList<String>();
 	private static final int ITEM1 = Menu.FIRST;
+	private static final String CUTflg = "CUTflg1";
+	private static final String PITflg = "PITflg";
 	Fragment MylistFragment;
+	Fragment ItemMylistFragment;
 	boolean mylist_flg =false;
+	boolean itemmylist_flg =false;
 	
 	@Override
 	  protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.tab_main);
+	    
 	  
 	    final ActionBar actionBar = getActionBar();
 	    actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -107,13 +118,21 @@ public class TabLayout extends Activity{
 		picFile = new File(
 			Environment.getExternalStorageDirectory() + "/Item",
 			picname);
-
-		 i = new Intent(getApplicationContext(),picture_edit.class);
-		 i.putExtra("Fpath", picFile.toString());
-		 i.putExtra("Fname", picname);
-		 i.putExtra("previousview", "camera");
 		
-		 
+		SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if(defaultSharedPreferences.getBoolean(PITflg,true)){
+        	defaultSharedPreferences.edit().putBoolean(PITflg,false).apply();
+                Log.d("テスト10","一回目");
+                i=new Intent(this,petutorial.class);
+        }else{
+            //二回目以降の処理
+        	Log.d("テスト10","２回目");
+        	i = new Intent(getApplicationContext(),picture_edit.class);
+        }
+		
+         i.putExtra("Fpath", picFile.toString());
+    	 i.putExtra("Fname", picname);
+    	 i.putExtra("previousview", "camera");
 		 startActivity(i);
 
 		 intent = new Intent(
@@ -144,12 +163,32 @@ public class TabLayout extends Activity{
 		fragmentTransaction.commit();
 		mylist_flg=true;
 	}
+	void itemMylist(){
+//		intent = new Intent(this, Mylist.class);
+//		startActivity(intent);
+		Fragment f=second.fragment();
+		android.app.FragmentManager fragmentManager = getFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		fragmentTransaction.detach(f);        
+		ItemMylistFragment = new ItemMylist();
+		fragmentTransaction.add(android.R.id.content, ItemMylistFragment);
+		fragmentTransaction.commit();
+		itemmylist_flg=true;
+	}
 	void unselected_mylist(){
 		android.app.FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		fragmentTransaction.detach(MylistFragment);   
 		fragmentTransaction.commit();
 		mylist_flg=false;
+	}
+	
+	void unselected_itemmylist(){
+		android.app.FragmentManager fragmentManager = getFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		fragmentTransaction.detach(ItemMylistFragment);   
+		fragmentTransaction.commit();
+		itemmylist_flg=false;
 	}
 	
 	protected String getPicFileName(){
@@ -178,7 +217,7 @@ public class TabLayout extends Activity{
 		
 		String destPath = null;
 
-		Cursor cr = db.rawQuery("SELECT * FROM Mylist ORDER BY favorite DESC, maked DESC", null);
+		Cursor cr = db.rawQuery("SELECT mylist_id,mylist,maked,favorite FROM Mylist ORDER BY favorite DESC, maked DESC", null);
 		cr.moveToFirst();
 
 		//プラスボタン
@@ -203,6 +242,62 @@ public class TabLayout extends Activity{
 		value.rImgList = imgList;
 		value.rFilename = filename;
 		value.rFavoList=favoList;
+		return value;
+	}
+	
+	public void first_camera(){
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if(defaultSharedPreferences.getBoolean(CUTflg,true)){
+        	defaultSharedPreferences.edit().putBoolean(CUTflg,false).apply();
+                Log.d("テスト10","一回目");
+                intent=new Intent(this,CUtutorial.class);
+                startActivity(intent);
+        }else{
+                //二回目以降の処理
+        	Log.d("テスト10","２回目");
+        	camera();
+        }
+	}
+	
+	class ReturnValue_item {
+		public List<String> rImgList = new ArrayList<String>();
+		public List<Integer> ritemid = new ArrayList<Integer>();
+		public List<String> rmemoList = new ArrayList<String>();
+		public List<String> nameList = new ArrayList<String>();
+		public List<String> rcategoryList = new ArrayList<String>();
+	}
+	
+	public ReturnValue_item itemmylist_db() {
+		imgList=new ArrayList<String>();
+		itemid=new ArrayList<Integer>();
+		memoList=new ArrayList<String>();
+		nameList=new ArrayList<String>();
+		categoryList = new ArrayList<String>();
+		db = dbHelper.getReadableDatabase();
+		 String destPath = null;
+
+		 Cursor cr = db.rawQuery("SELECT item, item_id, memo,category_id FROM Item WHERE NOT category_id = \"7\" ORDER BY category_id DESC", null);
+		 cr.moveToFirst();
+				
+		 for(int cnt = 0; cnt < cr.getCount(); cnt++){
+//		 	destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(0);
+		 	destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(0);
+
+		 	// List<String> imgList にはファイルのパスを入れる
+		 	imgList.add(destPath);
+		 	itemid.add(cnt,cr.getInt(1));
+		 	memoList.add(cr.getString(2));
+		 	nameList.add(cr.getString(0));
+		 	categoryList.add(cr.getString(3));
+		 	cr.moveToNext();
+		 }
+		
+		ReturnValue_item value = new ReturnValue_item();
+		value.rImgList = imgList;
+		value.ritemid=itemid;
+		value.rmemoList=memoList;
+		value.rcategoryList=categoryList;
+		value.nameList=nameList;
 		return value;
 	}
 	
@@ -289,6 +384,8 @@ public class TabLayout extends Activity{
 	    	}
 	    	if(mylist_flg){
 	    		unselected_mylist();
+	    	}else if(itemmylist_flg){
+	    		unselected_itemmylist();
 	    	}
 	    }
 	}

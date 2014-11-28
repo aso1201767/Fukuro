@@ -40,8 +40,6 @@ public class ItemList extends Activity implements OnItemClickListener {
 		setContentView(R.layout.itemlist);
 
 		db = dbHelper.getReadableDatabase();
-
-
 	}
 
 	@Override
@@ -55,7 +53,7 @@ public class ItemList extends Activity implements OnItemClickListener {
 
 
 		// GridViewのインスタンスを生成
-				gridview = (GridView) findViewById(R.id.imageview);
+				gridview = (GridView) findViewById(R.id.gridview);
 				// BaseAdapter を継承したGridAdapterのインスタンスを生成
 				// 子要素のレイアウトファイル grid_items.xml を main.xml に inflate するためにGridAdapterに引数として渡す
 				adapter = new GridAdapter(this.getApplicationContext(), R.layout.grid_items, imgList);
@@ -74,14 +72,22 @@ public class ItemList extends Activity implements OnItemClickListener {
 		// TODO 自動生成されたメソッド・スタブ
 		Intent vIntent = null;
 
-		if(position == 0){
+//		if(position == 0){
+//			vIntent = new Intent(this, AddMylist.class);
+//		}else{
 			vIntent = new Intent(this, AddMylist.class);
-		}else{
-			vIntent = new Intent(this, MylistDetails.class);
 			vIntent.putExtra("ID", filename.get(position));
-		}
-		startActivity(vIntent);
-
+//		}
+		//startActivity(vIntent);
+			// インテントのインスタンス作成
+	Intent data = new Intent();
+	// インテントに値をセット
+	data.putExtra("filepath", imgList.get(position));
+	data.putExtra("MylistID", filename.get(position));
+	// 結果を設定
+	setResult(RESULT_OK, data);
+	// サブ画面の終了
+	finish();
 	}
 
 	private void getImagePath() {  //プラス画像とDBに格納してある画像のパスをimgListに挿入
@@ -99,15 +105,15 @@ public class ItemList extends Activity implements OnItemClickListener {
 //		favoList.add("plus");
 		//プラスボタン画像をfileListに挿入
 
-		for(int cnt = 1; cnt <= cr.getCount(); cnt++){
-			//destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(1);
+		for(int cnt = 0; cnt < cr.getCount(); cnt++){
+//			destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(1);
 			destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(1);
 			System.out.println(cr.getString(1));
 
 			// List<String> imgList にはファイルのパスを入れる
 			imgList.add(destPath);
 			filename.add(cnt,cr.getString(0));
-			favoList.add(cr.getString(3));
+//			favoList.add(cr.getString(3));
 			cr.moveToNext();
 		}
 
@@ -160,7 +166,7 @@ public class ItemList extends Activity implements OnItemClickListener {
 			Bitmap bmp2 = BitmapFactory.decodeResource(r,R.drawable.no_star);
 			Bitmap bmp3 = BitmapFactory.decodeResource(r,R.drawable.white);
 
-			if(position != 0){  //プラスボタン以外の画像読み出し
+//			if(position != 0){  //プラスボタン以外の画像読み出し
 				Bitmap bmp = BitmapFactory.decodeFile(mFilepath);
 				bmp = Bitmap.createScaledBitmap(bmp, 120, 160, true);
 				holder.imageView.setImageBitmap(bmp);
@@ -168,14 +174,14 @@ public class ItemList extends Activity implements OnItemClickListener {
 //				}else{
 //					holder.favo.setImageBitmap(bmp2);
 //				}
-
-			}else{  //プラスボタンの画像読み出し
+//
+//			}else{  //プラスボタンの画像読み出し
 //				Bitmap bmp = BitmapFactory.decodeResource(r,R.drawable.plus);
 //				bmp = Bitmap.createScaledBitmap(bmp, 120, 160, true);
 //				holder.imageView.setImageBitmap(bmp);
-
-				//holder.favo.setImageBitmap(bmp3);
-			}
+//
+//				//holder.favo.setImageBitmap(bmp3);
+//			}
 
 			return convertView;
 		}

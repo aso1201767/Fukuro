@@ -93,6 +93,7 @@ public class Mylist extends Fragment implements OnItemClickListener {
 			tabLayout.move(Coordinate.class,null,null);
 		}else{
 			tabLayout.move(MylistDetails.class,"ID",filename.get(position));
+			Log.i("100","100="+filename.get(position));
 		}
 
 	}

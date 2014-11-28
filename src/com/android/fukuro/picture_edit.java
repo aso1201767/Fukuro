@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -16,6 +17,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +42,11 @@ public class picture_edit extends Activity {
 	private String picname = null;
 	private String previousview=null;
 	private String pen_mode=null;
+	private DBHelper dbHelper = new DBHelper(this);
+	private String memo=null;
+	private String category;
+	public static SQLiteDatabase db;
+	private Intent inte;
 	String info="pic";
 	private void setViewId(){
 		penview = (penView)findViewById(R.id.view1);
@@ -54,18 +61,30 @@ public class picture_edit extends Activity {
 		setViewId();
 		Log.d("picture_edit", "onCreate");
 		setTitle("画像編集");
+		db = dbHelper.getWritableDatabase();
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		penview.pen_mode="eraser";
-		Intent inte = getIntent();
+		inte = getIntent();
 		path = inte.getStringExtra("Fpath");
-		picname = inte.getStringExtra("Fname");
 		previousview=inte.getStringExtra("previousview");
 		penview.previousview=previousview;
+		if(previousview.equals("camera")){//前画面がitemDetails
+			picname = inte.getStringExtra("Fname");
+		}else if(previousview.equals("itemDetails")){
+			Time time = new Time("Asia/Tokyo");
+      		 time.setToNow();
+      		 picname = time.year + "_" + (time.month+1) + "_" + time.monthDay + "_" + time.hour + "_" + time.minute + "_" + time.second+".png";
+			memo=inte.getStringExtra("memo");
+			category=inte.getStringExtra("category");
+			Log.i("100","memo"+memo);
+			Log.i("100","category"+category);
+			info="info";
+		}
 		penview.camerapath=path;
-		penview.cameraname=picname;
+		penview.picname=picname;
 		penview.info=info;
-		Log.d("picture","picname="+picname);
-		Log.d("picture","info="+info );
+		Log.i("100","path"+path);
+		Log.i("100","name"+picname);
 		if(previousview.equals("camera")){
 			// 確認ダイアログの生成
 	        alertDlg = new AlertDialog.Builder(this);
@@ -87,7 +106,7 @@ public class picture_edit extends Activity {
 	                    // キャンセル ボタンクリック処理
 	                }
 	            });
-		}else{
+		}else if(previousview.equals("itemDetails")){
 			// 確認ダイアログの生成
 	        alertDlg = new AlertDialog.Builder(this);
 	        alertDlg.setTitle("画像を保存しますか");
@@ -97,6 +116,9 @@ public class picture_edit extends Activity {
 	            new DialogInterface.OnClickListener() {
 	                public void onClick(DialogInterface dialog, int which) {
 	                    // 上書き ボタンクリック処理
+	                	picname = inte.getStringExtra("Fname");
+	                	Log.e("name","name"+picname);
+	                	penview.picname=picname;
 	                	penview.saveBitmapToSd();
 	                	move();
 	                }
@@ -106,6 +128,10 @@ public class picture_edit extends Activity {
 	            new DialogInterface.OnClickListener() {
 	                public void onClick(DialogInterface dialog, int which) {
 	                    // 新規 ボタンクリック処理
+	                	 if(previousview.equals("itemDetails")){//前画面がItemDetailsの場合
+	            			 dbHelper.InsertItem(db,picname,category,memo);
+	            		 }
+	                	 penview.saveBitmapToSd();
 	                	move();
 	                }
 	            });
@@ -223,6 +249,7 @@ public class picture_edit extends Activity {
 		picname = null;
 		previousview=null;
 		pen_mode=null;
+		dbHelper.close();
 	}
 
 	@Override
@@ -280,8 +307,10 @@ public class picture_edit extends Activity {
 			intent.putExtra("Fname", picname);
 			intent.putExtra("previousview", view);
 			startActivity(intent);
-		}else{
-			
+		}else if(previousview.equals("itemDetails")){
+			Intent  intent = new Intent(this, TabLayout.class);
+			startActivity(intent);
+			finish();
 		}
 	}
 }
