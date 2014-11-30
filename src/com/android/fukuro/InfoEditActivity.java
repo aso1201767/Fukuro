@@ -39,7 +39,7 @@ public class InfoEditActivity extends Activity implements View.OnClickListener{
 
 	RelativeLayout mainlayout;
 	InputMethodManager inputMethodManager;
-	Long str = null;
+	Long str = (long) 1;
 	String memo = null;
 	String path = null;
 	String picname = null;

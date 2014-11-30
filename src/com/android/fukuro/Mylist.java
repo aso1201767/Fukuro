@@ -83,14 +83,13 @@ public class Mylist extends Fragment implements OnItemClickListener {
 		Log.d("MyList","onStop");
 	}
 
-
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		// TODO 自動生成されたメソッド・スタブ
 
 		if(position == 0){
-			tabLayout.move(Coordinate.class,null,null);
+			tabLayout.move1(Coordinate.class,"previousview","Mylist");
 		}else{
 			tabLayout.move(MylistDetails.class,"ID",filename.get(position));
 			Log.i("100","100="+filename.get(position));
@@ -153,7 +152,7 @@ public class Mylist extends Fragment implements OnItemClickListener {
 			Resources r = getResources();
 			Bitmap bmp2 = BitmapFactory.decodeResource(r,R.drawable.no_star);
 			Bitmap bmp3 = BitmapFactory.decodeResource(r,R.drawable.white);
-
+			
 			if(position != 0){  //プラスボタン以外の画像読み出し
 				bmp = BitmapFactory.decodeFile(mFilepath);
 				bmp = Bitmap.createScaledBitmap(bmp, 120, 160, true);

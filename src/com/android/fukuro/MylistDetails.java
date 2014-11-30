@@ -69,6 +69,7 @@ public class MylistDetails extends Activity implements OnClickListener {
 		System.out.println(bFavo);
 		favo = (Button)findViewById(R.id.btn_favo);
 		favo.setOnClickListener(this);
+		
 
 		if(bFavo == true){
 			favo.setText("★お気に入り解除");
@@ -78,7 +79,7 @@ public class MylistDetails extends Activity implements OnClickListener {
 		del = (Button)findViewById(R.id.btn_del);
 		del.setOnClickListener(this);
 
-		edit = (Button)findViewById(R.id.btn_del);
+		edit = (Button)findViewById(R.id.btn_edit);
 		edit.setOnClickListener(this);
 
 	}
@@ -106,8 +107,9 @@ public class MylistDetails extends Activity implements OnClickListener {
 			}
 			break;
 		case R.id.btn_edit:
-			Intent vIntent = new Intent(this, AddMylist.class);
+			Intent vIntent = new Intent(this, Coordinate.class);
 			vIntent.putExtra("ID", stID);
+			vIntent.putExtra("previousview", "MylistDetails");
 			startActivity(vIntent);
 			break;
 		case R.id.btn_del:

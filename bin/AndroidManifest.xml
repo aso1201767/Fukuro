@@ -18,7 +18,7 @@
         android:theme="@style/CustomActionBarTheme" 
         >
         <activity
-            android:name=".TopActivity"
+            android:name=".TabLayout"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,7 +48,7 @@
         </activity>
         
         <activity
-            android:name=".TabLayout"
+            android:name=".Coordinate"
             android:label="@string/app_name" >
         </activity>
         
@@ -83,7 +83,7 @@
         </activity>
         
         <activity
-            android:name=".Coordinate"
+            android:name=".TopActivity"
             android:label="@string/app_name" >
         </activity>
         

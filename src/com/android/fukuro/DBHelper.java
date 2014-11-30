@@ -174,8 +174,15 @@ public class DBHelper extends SQLiteOpenHelper {
 		Integer bottom = d;
 		Integer left = a;
 	
-		String sql ="INSERT INTO Mylistmaking(mylist_id,item_id,item_position_R,item_priority,item_position_T,item_position_B,item_position_L,magni)"
+		String sql ="REPLACE INTO Mylistmaking(mylist_id,item_id,item_position_R,item_priority,item_position_T,item_position_B,item_position_L,magni)"
 				+ " VALUES(\""+ mylistid +"\",\""+ ItemID + "\",\""+ right + "\",\""+ itemid + "\",\""+ top + "\",\""+ bottom + "\",\""+ left + "\",\"1\")";
+		db.execSQL(sql);
+	}
+	
+	public void DeleMylistmaking(SQLiteDatabase db, String MylistID){
+		String mylistid = MylistID;
+	
+		String sql ="DELETE FROM Mylistmaking WHERE mylist_id=\""+mylistid+"\"";
 		db.execSQL(sql);
 	}
 }

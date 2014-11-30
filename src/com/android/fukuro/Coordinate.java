@@ -3,25 +3,39 @@ package com.android.fukuro;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 
@@ -32,9 +46,20 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 	public static SQLiteDatabase db;
     private Bitmap mBitmap;
     private final int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
+    private ArrayList<Integer> priority=new ArrayList<Integer>();
+    private ArrayList<String> usesimg=new ArrayList<String>();
+    private ArrayList<String> itemPath=new ArrayList<String>();
+    private ArrayList<String> item_priority=new ArrayList<String>();
+    private ArrayList<Integer> item_position_L=new ArrayList<Integer>();
+    private ArrayList<Integer> item_position_T=new ArrayList<Integer>();
+    private ArrayList<Integer> magni=new ArrayList<Integer>();
+    private ArrayList<String> item_idlist=new ArrayList<String>();
+    private String previousview=null;
+    private String[] imglist = { "img1", "img2", "img3", "img4", "img5", "img6", "img7"};
     int flag = 1;
 	File dir =new File("/data/data/com.android.fukuro/Item");
-	private RelativeLayout Rela;
+	//private RelativeLayout Rela;
+	private FrameLayout frameLayout;
 	 String MylistID = null;
 	 String ItemID = "1";
 	 View view;
@@ -45,25 +70,33 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 	 String ItemID5=null;
 	 String ItemID6=null;
 	 String ItemID7=null;
-	 
 	 String returnValue=null;
+	 int selectimage;
+	 ImageView img1,img2,img3,img4,img5,img6,img7;
+	 DragViewListener listener;
+	 private int selectedView=0;
+	 Toast toast;
+	 Long ss = (long) 1;
+	 String destPath = null;
 	 
 	 private static final int SUB_ACTIVITY = 1001;
-
-
+	 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.coordinate);
 		Log.i("coor","onCreate");
 
         super.onCreate(savedInstanceState);
-//    	addContentView(Rela, new LayoutParams(FC, FC));
-        Rela = (RelativeLayout)findViewById(R.id.rela);
-
 	    ImageButton imgbutton = (ImageButton)findViewById(R.id.addbtn);
-        Button btn1 =(Button)findViewById(R.id.btn1);
+        Button btn1 =(Button)findViewById(R.id.savebtn);
+        Button upbtn=(Button)findViewById(R.id.upbtn);
+        Button downbtn=(Button)findViewById(R.id.downbtn);
+        Button delebtn=(Button)findViewById(R.id.delebtn);
        	imgbutton.setOnClickListener(this);
        	btn1.setOnClickListener(this);
+       	upbtn.setOnClickListener(this);
+       	downbtn.setOnClickListener(this);
+       	delebtn.setOnClickListener(this);
 
 		//読み書き可能なデータベースをオープン
 		// 読み取り専用の場合はgetReadableDatabase()を用いる
@@ -71,7 +104,171 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 		Window window = getWindow();
 		view = window.getDecorView();
 		view.setDrawingCacheEnabled(true);
+        frameLayout = (FrameLayout)findViewById(R.id.frame);
+        
+        img1 = (ImageView)findViewById(R.id.imageView1);
+        img2 = (ImageView)findViewById(R.id.imageView2);
+		img3 = (ImageView)findViewById(R.id.imageView3);
+		img4 = (ImageView)findViewById(R.id.imageView4);
+		img5 = (ImageView)findViewById(R.id.imageView5);
+		img6 = (ImageView)findViewById(R.id.imageView6);
+		img7 = (ImageView)findViewById(R.id.imageView7);
+        
+        // ドラッグ対象Viewとイベント処理クラスを紐付ける
+		listener = new DragViewListener(img1);
+		img1.setOnTouchListener(listener);
+		
+		// ドラッグ対象Viewとイベント処理クラスを紐付ける
+	    listener = new DragViewListener(img2);
+	    img2.setOnTouchListener(listener);
+	    
+	    // ドラッグ対象Viewとイベント処理クラスを紐付ける
+	    listener = new DragViewListener(img3);
+	    img3.setOnTouchListener(listener);
+	    
+	    // ドラッグ対象Viewとイベント処理クラスを紐付ける
+	    listener = new DragViewListener(img4);
+	    img4.setOnTouchListener(listener);
+	    
+	    // ドラッグ対象Viewとイベント処理クラスを紐付ける
+	    listener = new DragViewListener(img5);
+	    img5.setOnTouchListener(listener);
+	    
+	    // ドラッグ対象Viewとイベント処理クラスを紐付ける
+	    listener = new DragViewListener(img6);
+	    img6.setOnTouchListener(listener);
+	    
+	    // ドラッグ対象Viewとイベント処理クラスを紐付ける
+	    listener = new DragViewListener(img7);
+	    img7.setOnTouchListener(listener);
+	    itemPath=new ArrayList<String>();
+	    item_priority=new ArrayList<String>();
+	    item_position_L=new ArrayList<Integer>();
+	    item_position_T=new ArrayList<Integer>();
+	    magni = new ArrayList<Integer>();
+	    item_idlist=new ArrayList<String>();
 
+	    Intent intent= getIntent();
+	    previousview=intent.getStringExtra("previousview");
+	    if(previousview.equals("MylistDetails")){
+	    	MylistID=intent.getStringExtra("ID");
+		    //再編集
+		    Cursor cr = db.rawQuery("select i.item,mm.item_priority,mm.item_position_L,mm.item_position_T,mm.magni,i.item_id from Mylistmaking mm,Item i where mm.mylist_id=\""+MylistID+"\" and mm.item_id=i.item_id order by item_priority", null);
+			cr.moveToFirst();
+		    
+			for(int cnt = 1; cnt <= cr.getCount(); cnt++){
+				destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(0);
+	//			destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(1);
+				// List<String> imgList にはファイルのパスを入れる
+				itemPath.add(destPath);
+				item_priority.add(cr.getString(1));
+				item_position_L.add(cr.getInt(2));
+				item_position_T.add(cr.getInt(3));
+				magni.add(cr.getInt(4));
+				item_idlist.add(cr.getString(5));
+				cr.moveToNext();
+			}
+			for(int i=0;i<itemPath.size();i++){
+				File file = new File(itemPath.get(i));
+				usesimg.add(imglist[i]);
+				String img=imglist[i];
+				if(file.exists()){
+				Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
+					if(img=="img1"){
+						img1.setImageBitmap(_bm);
+						priority.add(R.id.imageView1);
+						ItemID1=item_idlist.get(i);
+						frameLayout.removeView(img1);
+					    param.setMargins(item_position_L.get(i), item_position_T.get(i), 0, 0);
+					}else if(img=="img2"){
+						img2.setImageBitmap(_bm);
+						priority.add(R.id.imageView2);
+						ItemID2=item_idlist.get(i);
+						frameLayout.removeView(img2);
+					    param1.setMargins(item_position_L.get(i), item_position_T.get(i), 0, 0);
+					}else if(img=="img3"){
+						img3.setImageBitmap(_bm);
+						priority.add(R.id.imageView3);
+						ItemID3=item_idlist.get(i);
+						frameLayout.removeView(img3);
+					    param2.setMargins(item_position_L.get(i), item_position_T.get(i), 0, 0);
+					}else if(img=="img4"){
+						img4.setImageBitmap(_bm);
+						priority.add(R.id.imageView4);
+						ItemID4=item_idlist.get(i);
+						frameLayout.removeView(img4);
+					    param3.setMargins(item_position_L.get(i), item_position_T.get(i), 0, 0);
+					}else if(img=="img5"){
+						img5.setImageBitmap(_bm);
+						priority.add(R.id.imageView5);
+						ItemID5=item_idlist.get(i);
+						frameLayout.removeView(img5);
+					    param4.setMargins(item_position_L.get(i), item_position_T.get(i), 0, 0);
+					}else if(img=="img6"){
+						img6.setImageBitmap(_bm);
+						priority.add(R.id.imageView6);
+						ItemID6=item_idlist.get(i);
+						frameLayout.removeView(img6);
+					    param5.setMargins(item_position_L.get(i), item_position_T.get(i), 0, 0);
+					}else if(img=="img7"){
+						img7.setImageBitmap(_bm);
+						priority.add(R.id.imageView7);
+						ItemID7=item_idlist.get(i);
+						frameLayout.removeView(img7);
+					    param6.setMargins(item_position_L.get(i), item_position_T.get(i), 0, 0);
+					}
+				}
+			}
+		    
+		    for(int i=0;i<priority.size();i++){
+		    	if(priority.get(i)==R.id.imageView1){
+		    		frameLayout.addView(img1, param);
+		    	}else if(priority.get(i)==R.id.imageView2){
+		    		frameLayout.addView(img2, param1);
+		    	}else if(priority.get(i)==R.id.imageView3){
+		    		frameLayout.addView(img3, param2);
+		    	}else if(priority.get(i)==R.id.imageView4){
+		    		frameLayout.addView(img4, param3);
+		    	}else if(priority.get(i)==R.id.imageView5){
+		    		frameLayout.addView(img5, param4);
+		    	}else if(priority.get(i)==R.id.imageView6){
+		    		frameLayout.addView(img6, param5);
+		    	}else if(priority.get(i)==R.id.imageView7){
+		    		frameLayout.addView(img7, param6);
+		    	}
+		    }
+	    }
+	    
+	    Cursor c = db.rawQuery("select category_name from Category where not category_id=\"7\"", null);
+		c.moveToFirst();
+
+		
+		 CharSequence[] list = new CharSequence[c.getCount()];
+         for (int i = 0; i < list.length; i++) {
+             list[i] = c.getString(0);
+             c.moveToNext();
+         }
+         c.close();
+
+         Spinner spinner = (Spinner)this.findViewById(R.id.spinner1);
+         spinner.setAdapter(new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, list));
+         
+         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+     	    // アイテムが選択された時の動作
+     	        public void onItemSelected(AdapterView parent,View view, int position,long id) {
+     	        // Spinner を取得
+     	        Spinner spinner = (Spinner) parent;
+     	        // 選択されたアイテムのテキストを取得
+     	       ss = spinner.getSelectedItemId();
+     	       ss = ss + 1;
+     	       setImageView("");
+     	    }
+
+     	    // 何も選択されなかった時の動作
+     	    public void onNothingSelected(AdapterView parent) {
+     	    	setImageView("");
+     	    }
+     	    });
 	}
 	
 //	    imgbutton.setOnClickListener(new OnClickListener() {
@@ -107,357 +304,49 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 		return super.onOptionsItemSelected(item);
 	}
 
-
-//	addContentView(relativeLayout, new LayoutParams(FC, FC));
-	RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(WC, WC);
-	RelativeLayout.LayoutParams param1 = new RelativeLayout.LayoutParams(WC, WC);
-	RelativeLayout.LayoutParams param2 = new RelativeLayout.LayoutParams(WC, WC);
-	RelativeLayout.LayoutParams param3 = new RelativeLayout.LayoutParams(WC, WC);
-	RelativeLayout.LayoutParams param4 = new RelativeLayout.LayoutParams(WC, WC);
-	RelativeLayout.LayoutParams param5 = new RelativeLayout.LayoutParams(WC, WC);
-	RelativeLayout.LayoutParams param6 = new RelativeLayout.LayoutParams(WC, WC);
-	RelativeLayout.LayoutParams param7 = new RelativeLayout.LayoutParams(WC, WC);
+	FrameLayout.LayoutParams param = new FrameLayout.LayoutParams(WC, WC);
+	FrameLayout.LayoutParams param1 = new FrameLayout.LayoutParams(WC, WC);
+	FrameLayout.LayoutParams param2 = new FrameLayout.LayoutParams(WC, WC);
+	FrameLayout.LayoutParams param3 = new FrameLayout.LayoutParams(WC, WC);
+	FrameLayout.LayoutParams param4 = new FrameLayout.LayoutParams(WC, WC);
+	FrameLayout.LayoutParams param5 = new FrameLayout.LayoutParams(WC, WC);
+	FrameLayout.LayoutParams param6 = new FrameLayout.LayoutParams(WC, WC);
+	FrameLayout.LayoutParams param7 = new FrameLayout.LayoutParams(WC, WC);
 	int a = 0;
 	int b = 0;
-	int c = 0;
-	int d = 0;
-	int a1 = 0;
-	int b1 = 0;
-	int c1 = 0;
-	int d1 = 0;
-	int a2 = 0;
-	int b2 = 0;
-	int c2 = 0;
-	int d2 = 0;
-	int a3 = 0;
-	int b3 = 0;
-	int c3 = 0;
-	int d3 = 0;
-	int a4 = 0;
-	int b4 = 0;
-	int c4 = 0;
-	int d4 = 0;
-	int a5 = 0;
-	int b5 = 0;
-	int c5 = 0;
-	int d5 = 0;
-	int a6 = 0;
-	int b6 = 0;
-	int c6 = 0;
-	int d6 = 0;
 
 	@Override
 	public void onClick(View v) {
-		ImageView img1 = (ImageView)findViewById(R.id.imageView1);
-		 ImageView img2 = (ImageView)findViewById(R.id.imageView2);
-		 ImageView img3 = (ImageView)findViewById(R.id.imageView3);
-		 ImageView img4 = (ImageView)findViewById(R.id.imageView4);
-		 ImageView img5 = (ImageView)findViewById(R.id.imageView5);
-		 ImageView img6 = (ImageView)findViewById(R.id.imageView6);
-		 ImageView img7 = (ImageView)findViewById(R.id.imageView7);
     switch(v.getId()){
 
          case R.id.addbtn:
 
-    	 if (flag == 1){
+    	 if (flag < 8){
     		 Intent intent = new Intent(getApplicationContext(),ItemList.class);
+    		 intent.putExtra("category_id", ss.toString());
+    		 intent.putExtra("Itemid1", ItemID1);
+    		 intent.putExtra("Itemid2", ItemID2);
+    		 intent.putExtra("Itemid3", ItemID3);
+    		 intent.putExtra("Itemid4", ItemID4);
+    		 intent.putExtra("Itemid5", ItemID5);
+    		 intent.putExtra("Itemid6", ItemID6);
+    		 intent.putExtra("Itemid7", ItemID7);
     		 startActivityForResult(intent, SUB_ACTIVITY);
-    		
-//			if(dir.exists()){
-//				File file = new File(dir.getAbsolutePath()+"/item_jacket.jpg");
-//				if(file.exists()){
-//				Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
-//				((ImageView)findViewById(R.id.imageView1)).setImageBitmap(_bm);
-//				}
-//			}
-//			// ドラッグ対象Viewとイベント処理クラスを紐付ける
-//	        ImageView dragView = (ImageView) findViewById(R.id.imageView1);
-//			DragViewListener listener = new DragViewListener(dragView);
-//			dragView.setOnTouchListener(listener);
-
-    	 }else if(flag == 2){
-    		 Intent intent = new Intent(getApplicationContext(),ItemList.class);
-    		 startActivityForResult(intent, SUB_ACTIVITY);
-
-// 	 		 a =  img1.getLeft()-32;
-// 	 		 b =img1.getTop()-32;
-// 	 		 c = img1.getRight();
-// 	 		 d = img1.getBottom();
-// 	 	    Rela.removeView(img1);
-// 	 // マージンを指定（左、上、右、下）
-//			 param.setMargins(a, b, c, d);
-//			 Rela.addView(img1, param);
-//
-// 			if(dir.exists()){
-// 				File file = new File(dir.getAbsolutePath()+"/item_jacket&1.png");
-// 				if(file.exists()){
-// 				Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
-// 				((ImageView)findViewById(R.id.imageView2)).setImageBitmap(_bm);
-// 				}
-// 			}
-// 		     // ドラッグ対象Viewとイベント処理クラスを紐付ける
-// 	        ImageView dragView = (ImageView) findViewById(R.id.imageView2);
-// 			DragViewListener1 listener = new DragViewListener1(dragView);
-// 			dragView.setOnTouchListener(listener);
-    	 }else if(flag == 3){
-    		 Intent intent = new Intent(getApplicationContext(),ItemList.class);
-    		 startActivityForResult(intent, SUB_ACTIVITY);
-//  	 		 a =  img1.getLeft()-32;
-//  	 		 b =img1.getTop()-32;
-//  	 		 c = img1.getRight();
-//  	 		 d = img1.getBottom();
-//  	 	    Rela.removeView(img1);
-//  	 // マージンを指定（左、上、右、下）
-// 			 param.setMargins(a, b, c, d);
-// 			 Rela.addView(img1, param);
-//  	 		 a1 =  img2.getLeft()-32;
-//  	 		 b1 =img2.getTop()-32;
-//  	 		 c1 = img2.getRight();
-//  	 		 d1 = img2.getBottom();
-//  	 	    Rela.removeView(img2);
-//  	 // マージンを指定（左、上、右、下）
-// 			 param1.setMargins(a1, b1, c1, d1);
-// 			 Rela.addView(img2, param1);
-//
-// 			if(dir.exists()){
-// 				File file = new File(dir.getAbsolutePath()+"/item_nitt&1.png");
-// 				if(file.exists()){
-// 				Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
-// 				((ImageView)findViewById(R.id.imageView3)).setImageBitmap(_bm);
-// 				}
-// 			}
-// 		     // ドラッグ対象Viewとイベント処理クラスを紐付ける
-// 	        ImageView dragView = (ImageView) findViewById(R.id.imageView3);
-// 			DragViewListener listener = new DragViewListener(dragView);
-// 			dragView.setOnTouchListener(listener);
-    	 }else if(flag == 4){
-    		 
-    		 Intent intent = new Intent(getApplicationContext(),ItemList.class);
-    		 startActivityForResult(intent, SUB_ACTIVITY);
-
-//   	 		 a =  img1.getLeft()-32;
-//   	 		 b =img1.getTop()-32;
-//   	 		 c = img1.getRight();
-//   	 		 d = img1.getBottom();
-//   	 	    Rela.removeView(img1);
-//   	 // マージンを指定（左、上、右、下）
-//  			 param.setMargins(a, b, c, d);
-//  			 Rela.addView(img1, param);
-//   	 		 a1 =  img2.getLeft()-32;
-//   	 		 b1 =img2.getTop()-32;
-//   	 		 c1 = img2.getRight();
-//   	 		 d1 = img2.getBottom();
-//   	 	    Rela.removeView(img2);
-//   	 // マージンを指定（左、上、右、下）
-//  			 param1.setMargins(a1, b1, c1, d1);
-//  			 Rela.addView(img2, param1);
-//    	 	 a2 = img3.getLeft()-32;
-//       	 	 b2 = img3.getTop()-32;
-//       	 	 c2 = img3.getRight();
-//       	 	 d2 = img3.getBottom();
-//       	 	 Rela.removeView(img3);
-//       	 // マージンを指定（左、上、右、下）
-//      		 param2.setMargins(a2, b2, c2, d2);
-//      		 Rela.addView(img3, param2);
-//
-// 			if(dir.exists()){
-// 				File file = new File(dir.getAbsolutePath()+"/item_pants1.png");
-// 				if(file.exists()){
-// 				Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
-// 				((ImageView)findViewById(R.id.imageView4)).setImageBitmap(_bm);
-// 				}
-// 			}
-// 		     // ドラッグ対象Viewとイベント処理クラスを紐付ける
-// 	        ImageView dragView = (ImageView) findViewById(R.id.imageView4);
-// 			DragViewListener listener = new DragViewListener(dragView);
-// 			dragView.setOnTouchListener(listener);
-    	 }else if(flag == 5){
-    		 Intent intent = new Intent(getApplicationContext(),ItemList.class);
-    		 startActivityForResult(intent, SUB_ACTIVITY);
-
-//    	 	 a =  img1.getLeft()-32;
-//       	 	 b =img1.getTop()-32;
-//       	 	 c = img1.getRight();
-//       	 	 d = img1.getBottom();
-//       	 	    Rela.removeView(img1);
-//       	 // マージンを指定（左、上、右、下）
-//      			 param.setMargins(a, b, c, d);
-//      			 Rela.addView(img1, param);
-//       	 	 a1 =  img2.getLeft()-32;
-//       	 	 b1 =img2.getTop()-32;
-//       	 	 c1 = img2.getRight();
-//       	 	 d1 = img2.getBottom();
-//       	 	    Rela.removeView(img2);
-//       	 // マージンを指定（左、上、右、下）
-//      			 param1.setMargins(a1, b1, c1, d1);
-//      			 Rela.addView(img2, param1);
-//        	 a2 = img3.getLeft()-32;
-//           	 b2 = img3.getTop()-32;
-//           	 c2 = img3.getRight();
-//           	 d2 = img3.getBottom();
-//           	 	 Rela.removeView(img3);
-//           	 // マージンを指定（左、上、右、下）
-//          		 param2.setMargins(a2, b2, c2, d2);
-//          		 Rela.addView(img3, param2);
-//         	  a3 = img4.getLeft()-32;
-//           	  b3 = img4.getTop()-32;
-//           	  c3 = img4.getRight();
-//           	  d3 = img4.getBottom();
-//           	 	 Rela.removeView(img4);
-//           	 // マージンを指定（左、上、右、下）
-//          		 param3.setMargins(a3, b3, c3, d3);
-//          		 Rela.addView(img4, param3);
-//
-// 			if(dir.exists()){
-// 				File file = new File(dir.getAbsolutePath()+"/item_shats1.png");
-// 				if(file.exists()){
-// 				Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
-// 				((ImageView)findViewById(R.id.imageView5)).setImageBitmap(_bm);
-// 				}
-// 			}
-// 		     // ドラッグ対象Viewとイベント処理クラスを紐付ける
-// 	        ImageView dragView = (ImageView) findViewById(R.id.imageView5);
-// 			DragViewListener listener = new DragViewListener(dragView);
-// 			dragView.setOnTouchListener(listener);
-    	 }else if(flag == 6){
-    		 Intent intent = new Intent(getApplicationContext(),ItemList.class);
-    		 startActivityForResult(intent, SUB_ACTIVITY);
-
-// 	 		 a =  img1.getLeft()-32;
-//   	 		 b =img1.getTop()-32;
-//   	 		 c = img1.getRight();
-//   	 		 d = img1.getBottom();
-//   	 	    Rela.removeView(img1);
-//   	 // マージンを指定（左、上、右、下）
-//  			 param.setMargins(a, b, c, d);
-//  			 Rela.addView(img1, param);
-//   	 		 a1 =  img2.getLeft()-32;
-//   	 		 b1 =img2.getTop()-32;
-//   	 		 c1 = img2.getRight();
-//   	 		 d1 = img2.getBottom();
-//   	 	    Rela.removeView(img2);
-//   	 // マージンを指定（左、上、右、下）
-//  			 param1.setMargins(a1, b1, c1, d1);
-//  			 Rela.addView(img2, param1);
-//    	 	 a2 = img3.getLeft()-32;
-//       	 	 b2 = img3.getTop()-32;
-//       	 	 c2 = img3.getRight();
-//       	 	 d2 = img3.getBottom();
-//       	 	 Rela.removeView(img3);
-//       	 // マージンを指定（左、上、右、下）
-//      		 param2.setMargins(a2, b2, c2, d2);
-//      		 Rela.addView(img3, param2);
-//     	 	 a3 = img4.getLeft()-32;
-//       	 	 b3 = img4.getTop()-32;
-//       	 	 c3 = img4.getRight();
-//       	 	 d3 = img4.getBottom();
-//       	 	 Rela.removeView(img4);
-//       	 // マージンを指定（左、上、右、下）
-//      		 param3.setMargins(a3, b3, c3, d3);
-//      		 Rela.addView(img4, param3);
-//      	 	 a4 = img5.getLeft()-32;
-//       	 	 b4 = img5.getTop()-32;
-//       	 	 c4 = img5.getRight();
-//       	 	 d4 = img5.getBottom();
-//       	 	 Rela.removeView(img5);
-//       	 // マージンを指定（左、上、右、下）
-//      		 param4.setMargins(a4, b4, c4, d4);
-//      		 Rela.addView(img5, param4);
-//
-// 			if(dir.exists()){
-// 				File file = new File(dir.getAbsolutePath()+"/item_shortpants1.png");
-// 				if(file.exists()){
-// 				Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
-// 				((ImageView)findViewById(R.id.imageView6)).setImageBitmap(_bm);
-// 				}
-// 			}
-// 		     // ドラッグ対象Viewとイベント処理クラスを紐付ける
-// 	        ImageView dragView = (ImageView) findViewById(R.id.imageView6);
-// 			DragViewListener listener = new DragViewListener(dragView);
-// 			dragView.setOnTouchListener(listener);
-    	 }else if(flag == 7){
-    		 Intent intent = new Intent(getApplicationContext(),ItemList.class);
-    		 startActivityForResult(intent, SUB_ACTIVITY);
-
-//  	 		 a =  img1.getLeft()-32;
-//   	 		 b =img1.getTop()-32;
-//   	 		 c = img1.getRight();
-//   	 		 d = img1.getBottom();
-//   	 	    Rela.removeView(img1);
-//   	 // マージンを指定（左、上、右、下）
-//  			 param.setMargins(a, b, c, d);
-//  			 Rela.addView(img1, param);
-//   	 		 a1 =  img2.getLeft()-32;
-//   	 		 b1 =img2.getTop()-32;
-//   	 		 c1 = img2.getRight();
-//   	 		 d1 = img2.getBottom();
-//   	 	    Rela.removeView(img2);
-//   	 // マージンを指定（左、上、右、下）
-//  			 param1.setMargins(a1, b1, c1, d1);
-//  			 Rela.addView(img2, param1);
-//    	 	 a2 = img3.getLeft()-32;
-//       	 	 b2 = img3.getTop()-32;
-//       	 	 c2 = img3.getRight();
-//       	 	 d2 = img3.getBottom();
-//       	 	 Rela.removeView(img3);
-//       	 // マージンを指定（左、上、右、下）
-//      		 param2.setMargins(a2, b2, c2, d2);
-//      		 Rela.addView(img3, param2);
-//     	 	 a3 = img4.getLeft()-32;
-//       	 	 b3 = img4.getTop()-32;
-//       	 	 c3 = img4.getRight();
-//       	 	 d3 = img4.getBottom();
-//       	 	 Rela.removeView(img4);
-//       	 // マージンを指定（左、上、右、下）
-//      		 param3.setMargins(a3, b3, c3, d3);
-//      		 Rela.addView(img4, param3);
-//      	 	 a4 = img5.getLeft()-32;
-//       	 	 b4 = img5.getTop()-32;
-//       	 	 c4 = img5.getRight();
-//       	 	 d4 = img5.getBottom();
-//       	 	Rela.removeView(img5);
-//       	 // マージンを指定（左、上、右、下）
-//      		 param4.setMargins(a4, b4, c4, d4);
-//      		 Rela.addView(img5, param4);
-//       	 	 a5 = img6.getLeft()-32;
-//       	 	 b5 = img6.getTop()-32;
-//       	 	 c5 = img6.getRight();
-//       	 	 d5 = img6.getBottom();
-//       	 	 Rela.removeView(img6);
-//       	 // マージンを指定（左、上、右、下）
-//      		 param5.setMargins(a5, b5, c5, d5);
-//      		 Rela.addView(img6, param5);
-//
-// 			if(dir.exists()){
-// 				File file = new File(dir.getAbsolutePath()+"/item_Tshats1.png");
-// 				if(file.exists()){
-// 				Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
-// 				((ImageView)findViewById(R.id.imageView7)).setImageBitmap(_bm);
-// 				}
-// 			}
-// 		     // ドラッグ対象Viewとイベント処理クラスを紐付ける
-// 	        ImageView dragView = (ImageView) findViewById(R.id.imageView7);
-// 			DragViewListener listener = new DragViewListener(dragView);
-// 			dragView.setOnTouchListener(listener);
+    	 }else{
+    		 toast = Toast.makeText(Coordinate.this, "これ以上追加できません。",Toast.LENGTH_LONG);
+			 toast.setGravity(Gravity.AXIS_CLIP, 0,0);
+			 toast.show();
     	 }
-    	 flag = flag + 1 ;
-
     	 break;
 
-         case R.id.btn1:
-        	 if(flag > 1){
-        		 Log.d("coordinate","test1");
-        		 Time time = new Time("Asia/Tokyo");
-        		 time.setToNow();
-        		 String date = time.year + "/" + (time.month+1) + "/" + time.monthDay + " " + time.hour + ":" + time.minute + ":" + time.second;
-        		 MylistID = dbHelper.InsertMylist(db,date);
-        		
+         case R.id.savebtn:
+        	 if(previousview.equals("MylistDetails")){
         		 Bitmap mBitmap = Bitmap.createBitmap(view.getDrawingCache(),30,175,570,880,null,true);
         		 
         		 try {
         			 // sdcardフォルダを指定
-//        			 File root = new File("/data/data/com.android.fukuro/Item");
-        			 File root = new File(Environment.getExternalStorageDirectory() + "/Item");
+        			 File root = new File("/data/data/com.android.fukuro/Item");
+//        			 File root = new File(Environment.getExternalStorageDirectory() + "/Item");
 
         			 // 保存処理開始
         			 FileOutputStream fos = null;
@@ -468,466 +357,450 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 
         			 // 保存処理終了
         			 fos.close();
-        			 } catch (Exception e) {
+        		 } catch (Exception e) {
         			 Log.e("Error", "" + e.toString());
-        			 }
+        		 }
+        		 dbHelper.DeleMylistmaking(db,MylistID);
+        	 }else if(previousview.equals("Mylist")){
+	        	 if(flag > 1){
+	        		 Log.d("coordinate","test1");
+	        		 Time time = new Time("Asia/Tokyo");
+	        		 time.setToNow();
+	        		 String date = time.year + "/" + (time.month+1) + "/" + time.monthDay + " " + time.hour + ":" + time.minute + ":" + time.second;
+	        		 MylistID = dbHelper.InsertMylist(db,date);
+	        		
+	        		 Bitmap mBitmap = Bitmap.createBitmap(view.getDrawingCache(),30,175,570,880,null,true);
+	        		 
+	        		 try {
+	        			 // sdcardフォルダを指定
+	        			 File root = new File("/data/data/com.android.fukuro/Item");
+	//        			 File root = new File(Environment.getExternalStorageDirectory() + "/Item");
+	
+	        			 // 保存処理開始
+	        			 FileOutputStream fos = null;
+	        			 fos = new FileOutputStream(new File(root, MylistID+".png"));
+	
+	        			 // jpegで保存
+	        			 mBitmap.compress(CompressFormat.PNG, 100, fos);
+	
+	        			 // 保存処理終了
+	        			 fos.close();
+	        		 } catch (Exception e) {
+	        			 Log.e("Error", "" + e.toString());
+	        		 }
+	        	 }
         	 }
-        	 if(flag == 2){
-      	 		 a =  img1.getLeft()-32;
-      	 		 b =img1.getTop()-32;
-      	 		 c = img1.getRight();
-      	 		 d = img1.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID1,a,b,c,d);
-        	 }else if(flag == 3){
-      	 		 a =  img1.getLeft()-32;
-      	 		 b =img1.getTop()-32;
-      	 		 c = img1.getRight();
-      	 		 d = img1.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID1,a,b,c,d);
-      	 		 a1 =  img2.getLeft()-32;
-      	 		 b1 =img2.getTop()-32;
-      	 		 c1 = img2.getRight();
-      	 		 d1 = img2.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID2,a1,b1,c1,d1);
-        	 }else if(flag == 4){
-      	 		 a =  img1.getLeft()-32;
-      	 		 b =img1.getTop()-32;
-      	 		 c = img1.getRight();
-      	 		 d = img1.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID1,a,b,c,d);
-      	 		 a1 =  img2.getLeft()-32;
-      	 		 b1 =img2.getTop()-32;
-      	 		 c1 = img2.getRight();
-      	 		 d1 = img2.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID2,a1,b1,c1,d1);
-      	 		 a2 =  img3.getLeft()-32;
-      	 		 b2 =img3.getTop()-32;
-      	 		 c2 = img3.getRight();
-      	 		 d2 = img3.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID3,a2,b2,c2,d2);
-
-        	 }else if(flag == 5){
-      	 		 a =  img1.getLeft()-32;
-      	 		 b =img1.getTop()-32;
-      	 		 c = img1.getRight();
-      	 		 d = img1.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID1,a,b,c,d);
-      	 		 a1 =  img2.getLeft()-32;
-      	 		 b1 =img2.getTop()-32;
-      	 		 c1 = img2.getRight();
-      	 		 d1 = img2.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID2,a1,b1,c1,d1);
-      	 		 a2 =  img3.getLeft()-32;
-      	 		 b2 =img3.getTop()-32;
-      	 		 c2 = img3.getRight();
-      	 		 d2 = img3.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID3,a2,b2,c2,d2);
-      	 		 a3 =  img4.getLeft()-32;
-      	 		 b3 =img4.getTop()-32;
-      	 		 c3 = img4.getRight();
-      	 		 d3 = img4.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID4,a3,b3,c3,d3);
-        	 }else if(flag == 6){
-      	 		 a =  img1.getLeft()-32;
-      	 		 b =img1.getTop()-32;
-      	 		 c = img1.getRight();
-      	 		 d = img1.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID1,a,b,c,d);
-      	 		 a1 =  img2.getLeft()-32;
-      	 		 b1 =img2.getTop()-32;
-      	 		 c1 = img2.getRight();
-      	 		 d1 = img2.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID2,a1,b1,c1,d1);
-      	 		 a2 =  img3.getLeft()-32;
-      	 		 b2 =img3.getTop()-32;
-      	 		 c2 = img3.getRight();
-      	 		 d2 = img3.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID3,a2,b2,c2,d2);
-      	 		 a3 =  img4.getLeft()-32;
-      	 		 b3 =img4.getTop()-32;
-      	 		 c3 = img4.getRight();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID4,a3,b3,c3,d3);
-      	 		 a4 =  img5.getLeft()-32;
-      	 		 b4 =img5.getTop()-32;
-      	 		 c4 = img5.getRight();
-      	 		 d4 = img5.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID5,a4,b4,c4,d4);
-        	 }else if(flag == 7) {
-      	 		 a =  img1.getLeft()-32;
-      	 		 b =img1.getTop()-32;
-      	 		 c = img1.getRight();
-      	 		 d = img1.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID1,a,b,c,d);
-      	 		 a1 =  img2.getLeft()-32;
-      	 		 b1 =img2.getTop()-32;
-      	 		 c1 = img2.getRight();
-      	 		 d1 = img2.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID2,a1,b1,c1,d1);
-      	 		 a2 =  img3.getLeft()-32;
-      	 		 b2 =img3.getTop()-32;
-      	 		 c2 = img3.getRight();
-      	 		 d2 = img3.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID3,a2,b2,c2,d2);
-      	 		 a3 =  img4.getLeft()-32;
-      	 		 b3 =img4.getTop()-32;
-      	 		 c3 = img4.getRight();
-      	 		 d3 = img4.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID4,a3,b3,c3,d3);
-      	 		 a4 =  img5.getLeft()-32;
-      	 		 b4 =img5.getTop()-32;
-      	 		 c4 = img5.getRight();
-      	 		 d4 = img5.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID5,a4,b4,c4,d4);
-      	 		 a5 =  img6.getLeft()-32;
-      	 		 b5 =img6.getTop()-32;
-      	 		 c5 = img6.getRight();
-      	 		 d5 = img6.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID6,a5,b5,c5,d5);
-        	 }else{
-      	 		 a =  img1.getLeft()-32;
-      	 		 b =img1.getTop()-32;
-      	 		 c = img1.getRight();
-      	 		 d = img1.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID1,a,b,c,d);
-      	 		 a1 =  img2.getLeft()-32;
-      	 		 b1 =img2.getTop()-32;
-      	 		 c1 = img2.getRight();
-      	 		 d1 = img2.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID2,a1,b1,c1,d1);
-      	 		 a2 =  img3.getLeft()-32;
-      	 		 b2 =img3.getTop()-32;
-      	 		 c2 = img3.getRight();
-      	 		 d2 = img3.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID3,a2,b2,c2,d2);
-      	 		 a3 =  img4.getLeft()-32;
-      	 		 b3 =img4.getTop()-32;
-      	 		 c3 = img4.getRight();
-      	 		 d3 = img4.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID4,a3,b3,c3,d3);
-      	 		 a4 =  img5.getLeft()-32;
-      	 		 b4 =img5.getTop()-32;
-      	 		 c4 = img5.getRight();
-      	 		 d4 = img5.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID5,a4,b4,c4,d4);
-      	 		 a5 =  img6.getLeft()-32;
-      	 		 b5 =img6.getTop()-32;
-      	 		 c5 = img6.getRight();
-      	 		 d5 = img6.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID6,a5,b5,c5,d5);
-      	 		 a6 =  img7.getLeft()-32;
-      	 		 b6 =img7.getTop()-32;
-      	 		 c6 = img7.getRight();
-      	 		 d6 = img7.getBottom();
-        		 dbHelper.InsertMylistmaking(db,MylistID,ItemID7,a6,b6,c6,d6);
-        	 }
+        	 for(int i=0;i<usesimg.size();i++){
+        		 if(usesimg.get(i)=="img1"){
+        			 a =  img1.getLeft();
+          	 		 b =img1.getTop();
+        			 dbHelper.InsertMylistmaking(db,MylistID,ItemID1,a,b,0,0);
+        		 }else if(usesimg.get(i)=="img2"){
+        			 a =  img2.getLeft();
+          	 		 b =img2.getTop();
+        			 dbHelper.InsertMylistmaking(db,MylistID,ItemID2,a,b,0,0);
+        		 }else if(usesimg.get(i)=="img3"){
+        			 a =  img3.getLeft();
+          	 		 b =img3.getTop();
+        			 dbHelper.InsertMylistmaking(db,MylistID,ItemID3,a,b,0,0);
+        		 }else if(usesimg.get(i)=="img4"){
+        			 a =  img4.getLeft();
+          	 		 b =img4.getTop();
+        			 dbHelper.InsertMylistmaking(db,MylistID,ItemID4,a,b,0,0);
+        		 }else if(usesimg.get(i)=="img5"){
+        			 a =  img5.getLeft();
+          	 		 b =img5.getTop();
+        			 dbHelper.InsertMylistmaking(db,MylistID,ItemID5,a,b,0,0);
+        		 }else if(usesimg.get(i)=="img6"){
+        			 a =  img6.getLeft();
+          	 		 b =img6.getTop();
+        			 dbHelper.InsertMylistmaking(db,MylistID,ItemID6,a,b,0,0);
+        		 }else if(usesimg.get(i)=="img7"){
+        			 a =  img7.getLeft();
+          	 		 b =img7.getTop();
+        			 dbHelper.InsertMylistmaking(db,MylistID,ItemID7,a,b,0,0);
+        		 }
+        	 }       
         	 finish();
 
         	 break;
+         case R.id.upbtn:
+        	 if(priority.size()==1 || priority.size()==0 || selectedView==0){
+        	 }else{
+        		 boolean flg=true;
+	        	 for(int i=0;i<priority.size();i++){
+	        		 if(selectedView==priority.get(i)&&i<priority.size()-1 && flg){
+		        		 Integer ii=priority.get(i+1);
+		        		 priority.set(i+1,priority.get(i));
+		        		 priority.set(i, ii);
+		        		 String jj=usesimg.get(i+1);
+		        		 usesimg.set(i+1,usesimg.get(i));
+		        		 usesimg.set(i, jj);
+		        		 flg=false;
+		        		 setImageView("");
+	        		 }
+	        	 }
         	 }
+        	 break;
+         case R.id.downbtn:
+        	 if(priority.size()==1 || priority.size()==0 ||selectedView==0){
+        	 }else{
+	        	 boolean flg=true;
+	        	 for(int i=0;i<priority.size();i++){
+	        		 if(selectedView==priority.get(i)&&i>0 && flg){
+		        		 Integer ii=priority.get(i-1);
+		        		 priority.set(i-1,priority.get(i));
+		        		 priority.set(i, ii);
+		        		 String jj=usesimg.get(i-1);
+		        		 usesimg.set(i-1,usesimg.get(i));
+		        		 usesimg.set(i, jj);
+		       			 flg=false;
+		       			 setImageView("");
+	        		 }
+	        	 }
+        	 }
+        	 break;
+         case R.id.delebtn:
+        	 if(priority.size()==0 ||selectedView==0){
+        	 }else{
+	        	 for(int i=0;i<priority.size();i++){
+	        		 if(selectedView==priority.get(i)){
+		        		 priority.remove(i);
+		        		 delesetImageView();
+		        		 usesimg.remove(i);
+		        		 flag = flag - 1 ;
+	        		 }
+	        	 }
+        	 }
+        	 break;
+    	}
 	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	// TODO Auto-generated method stub
 	// requestCodeがサブ画面か確認する
-		ImageView img1 = (ImageView)findViewById(R.id.imageView1);
-		 ImageView img2 = (ImageView)findViewById(R.id.imageView2);
-		 ImageView img3 = (ImageView)findViewById(R.id.imageView3);
-		 ImageView img4 = (ImageView)findViewById(R.id.imageView4);
-		 ImageView img5 = (ImageView)findViewById(R.id.imageView5);
-		 ImageView img6 = (ImageView)findViewById(R.id.imageView6);
-		 ImageView img7 = (ImageView)findViewById(R.id.imageView7);
 		if(requestCode == SUB_ACTIVITY){
 		// resultCodeがOKか確認する
 			if(resultCode == RESULT_OK){
-				// 結果を取得して, 表示する.
-				if (flag == 2){
-					returnValue=(String) data.getCharSequenceExtra("filepath");
-					ItemID1=(String) data.getCharSequenceExtra("MylistID");
-		    		
-					if(dir.exists()){
-						File file = new File(returnValue);
-						if(file.exists()){
-						Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
-						((ImageView)findViewById(R.id.imageView1)).setImageBitmap(_bm);
+				// 結果を取得して, 表示する
+				//現在使用していないimgを取得する
+				boolean flg=true;
+				String nowimg=null;
+				for(int i=0;i<imglist.length && flg;i++){
+					boolean flg2=true;
+					for(int j=0;j<usesimg.size();j++){
+						if(imglist[i]==usesimg.get(j)){
+							flg2=false;
 						}
 					}
-					// ドラッグ対象Viewとイベント処理クラスを紐付ける
-			        ImageView dragView = (ImageView) findViewById(R.id.imageView1);
-					DragViewListener listener = new DragViewListener(dragView);
-					dragView.setOnTouchListener(listener);
-					Log.i("test","a+"+ItemID1);
-
-		    	 }else if(flag == 3){
-		    		 returnValue=(String) data.getCharSequenceExtra("filepath");
-					 ItemID2=(String) data.getCharSequenceExtra("MylistID");
-
-		 	 		 a =  img1.getLeft()-32;
-		 	 		 b =img1.getTop()-32;
-		 	 		 c = img1.getRight()+a;
-		 	 		 d = img1.getBottom()+b;
-		 	 	    Rela.removeView(img1);
-		 	 // マージンを指定（左、上、右、下）
-					 param.setMargins(a, b, c, d);
-					 Rela.addView(img1, param);
-
-		 			if(dir.exists()){
-		 				File file = new File(returnValue);
-		 				if(file.exists()){
-		 				Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
-		 				((ImageView)findViewById(R.id.imageView2)).setImageBitmap(_bm);
-		 				}
-		 			}
-		 		     // ドラッグ対象Viewとイベント処理クラスを紐付ける
-		 	        ImageView dragView = (ImageView) findViewById(R.id.imageView2);
-		 			DragViewListener1 listener = new DragViewListener1(dragView);
-		 			dragView.setOnTouchListener(listener);
-		    	 }else if(flag == 4){
-		    		 returnValue=(String) data.getCharSequenceExtra("filepath");
-					 ItemID3=(String) data.getCharSequenceExtra("MylistID");
-
-		  	 		 a =  img1.getLeft()-32;
-		  	 		 b =img1.getTop()-32;
-		  	 		 c = img1.getRight()+a;
-		  	 		 d = img1.getBottom()+b;
-		  	 	    Rela.removeView(img1);
-		  	 // マージンを指定（左、上、右、下）
-		 			 param.setMargins(a, b, c, d);
-		 			 Rela.addView(img1, param);
-		  	 		 a1 =  img2.getLeft()-32;
-		  	 		 b1 =img2.getTop()-32;
-		  	 		 c1 = img2.getRight()+a1;
-		  	 		 d1 = img2.getBottom()+b1;
-		  	 	    Rela.removeView(img2);
-		  	 // マージンを指定（左、上、右、下）
-		 			 param1.setMargins(a1, b1, c1, d1);
-		 			 Rela.addView(img2, param1);
-
-		 			if(dir.exists()){
-		 				File file = new File(returnValue);
-		 				if(file.exists()){
-		 				Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
-		 				((ImageView)findViewById(R.id.imageView3)).setImageBitmap(_bm);
-		 				}
-		 			}
-		 		     // ドラッグ対象Viewとイベント処理クラスを紐付ける
-		 	        ImageView dragView = (ImageView) findViewById(R.id.imageView3);
-		 			DragViewListener listener = new DragViewListener(dragView);
-		 			dragView.setOnTouchListener(listener);
-		    	 }else if(flag == 5){
-		    		 returnValue=(String) data.getCharSequenceExtra("filepath");
-					 ItemID4=(String) data.getCharSequenceExtra("MylistID");
-
-		   	 		 a =  img1.getLeft()-32;
-		   	 		 b =img1.getTop()-32;
-		   	 		 c = img1.getRight()+a;
-		   	 		 d = img1.getBottom()+b;
-		   	 	    Rela.removeView(img1);
-		   	 // マージンを指定（左、上、右、下）
-		  			 param.setMargins(a, b, c, d);
-		  			 Rela.addView(img1, param);
-		   	 		 a1 =  img2.getLeft()-32;
-		   	 		 b1 =img2.getTop()-32;
-		   	 		 c1 = img2.getRight()+a1;
-		   	 		 d1 = img2.getBottom()+b1;
-		   	 	    Rela.removeView(img2);
-		   	 // マージンを指定（左、上、右、下）
-		  			 param1.setMargins(a1, b1, c1, d1);
-		  			 Rela.addView(img2, param1);
-		    	 	 a2 = img3.getLeft()-32;
-		       	 	 b2 = img3.getTop()-32;
-		       	 	 c2 = img3.getRight()+a2;
-		       	 	 d2 = img3.getBottom()+b2;
-		       	 	 Rela.removeView(img3);
-		       	 // マージンを指定（左、上、右、下）
-		      		 param2.setMargins(a2, b2, c2, d2);
-		      		 Rela.addView(img3, param2);
-		 			if(dir.exists()){
-		 				File file = new File(returnValue);
-		 				if(file.exists()){
-		 				Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
-		 				((ImageView)findViewById(R.id.imageView4)).setImageBitmap(_bm);
-		 				}
-		 			}
-		 		     // ドラッグ対象Viewとイベント処理クラスを紐付ける
-		 	        ImageView dragView = (ImageView) findViewById(R.id.imageView4);
-		 			DragViewListener listener = new DragViewListener(dragView);
-		 			dragView.setOnTouchListener(listener);
-		    	 }else if(flag == 6){
-		    		 
-		    		 returnValue=(String) data.getCharSequenceExtra("filepath");
-					 ItemID5=(String) data.getCharSequenceExtra("MylistID");
-
-		    	 	 a =  img1.getLeft()-32;
-		       	 	 b =img1.getTop()-32;
-		       	 	 c = img1.getRight()+a;
-		       	 	 d = img1.getBottom()+b;
-		       	 	    Rela.removeView(img1);
-		       	 // マージンを指定（左、上、右、下）
-		      			 param.setMargins(a, b, c, d);
-		      			 Rela.addView(img1, param);
-		       	 	 a1 =  img2.getLeft()-32;
-		       	 	 b1 =img2.getTop()-32;
-		       	 	 c1 = img2.getRight()+a1;
-		       	 	 d1 = img2.getBottom()+b1;
-		       	 	    Rela.removeView(img2);
-		       	 // マージンを指定（左、上、右、下）
-		      			 param1.setMargins(a1, b1, c1, d1);
-		      			 Rela.addView(img2, param1);
-		        	 a2 = img3.getLeft()-32;
-		           	 b2 = img3.getTop()-32;
-		           	 c2 = img3.getRight()+a2;
-		           	 d2 = img3.getBottom()+b2;
-		           	 	 Rela.removeView(img3);
-		           	 // マージンを指定（左、上、右、下）
-		          		 param2.setMargins(a2, b2, c2, d2);
-		          		 Rela.addView(img3, param2);
-		         	  a3 = img4.getLeft()-32;
-		           	  b3 = img4.getTop()-32;
-		           	  c3 = img4.getRight()+a3;
-		           	  d3 = img4.getBottom()+b3;
-		           	 	 Rela.removeView(img4);
-		           	 // マージンを指定（左、上、右、下）
-		          		 param3.setMargins(a3, b3, c3, d3);
-		          		 Rela.addView(img4, param3);
-
-		 			if(dir.exists()){
-		 				File file = new File(returnValue);
-		 				if(file.exists()){
-		 				Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
-		 				((ImageView)findViewById(R.id.imageView5)).setImageBitmap(_bm);
-		 				}
-		 			}
-		 		     // ドラッグ対象Viewとイベント処理クラスを紐付ける
-		 	        ImageView dragView = (ImageView) findViewById(R.id.imageView5);
-		 			DragViewListener listener = new DragViewListener(dragView);
-		 			dragView.setOnTouchListener(listener);
-		    	 }else if(flag == 7){
-		    		 returnValue=(String) data.getCharSequenceExtra("filepath");
-					 ItemID6=(String) data.getCharSequenceExtra("MylistID");
-
-		 	 		 a =  img1.getLeft()-32;
-		   	 		 b =img1.getTop()-32;
-		   	 		 c = img1.getRight()+a;
-		   	 		 d = img1.getBottom()+b;
-		   	 	    Rela.removeView(img1);
-		   	 // マージンを指定（左、上、右、下）
-		  			 param.setMargins(a, b, c, d);
-		  			 Rela.addView(img1, param);
-		  			 
-		   	 		 a1 =  img2.getLeft()-32;
-		   	 		 b1 =img2.getTop()-32;
-		   	 		 c1 = img2.getRight()+a1;
-		   	 		 d1 = img2.getBottom()+b1;
-		   	 	    Rela.removeView(img2);
-		   	 // マージンを指定（左、上、右、下）
-		  			 param1.setMargins(a1, b1, c1, d1);
-		  			 Rela.addView(img2, param1);
-		  			 
-		    	 	 a2 = img3.getLeft()-32;
-		       	 	 b2 = img3.getTop()-32;
-		       	 	 c2 = img3.getRight()+a2;
-		       	 	 d2 = img3.getBottom()+b2;
-		       	 	 Rela.removeView(img3);
-		       	 // マージンを指定（左、上、右、下）
-		      		 param2.setMargins(a2, b2, c2, d2);
-		      		 Rela.addView(img3, param2);
-		      		 
-		     	 	 a3 = img4.getLeft()-32;
-		       	 	 b3 = img4.getTop()-32;
-		       	 	 c3 = img4.getRight()+a3;
-		       	 	 d3 = img4.getBottom()+b3;
-		       	 	 Rela.removeView(img4);
-		       	 // マージンを指定（左、上、右、下）
-		      		 param3.setMargins(a3, b3, c3, d3);
-		      		 Rela.addView(img4, param3);
-		      		 
-		      	 	 a4 = img5.getLeft()-32;
-		       	 	 b4 = img5.getTop()-32;
-		       	 	 c4 = img5.getRight()+a4;
-		       	 	 d4 = img5.getBottom()+b4;
-		       	 	 Rela.removeView(img5);
-		       	 // マージンを指定（左、上、右、下）
-		      		 param4.setMargins(a4, b4, c4, d4);
-		      		 Rela.addView(img5, param4);
-
-		 			if(dir.exists()){
-		 				File file = new File(returnValue);
-		 				if(file.exists()){
-		 				Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
-		 				((ImageView)findViewById(R.id.imageView6)).setImageBitmap(_bm);
-		 				}
-		 			}
-		 		     // ドラッグ対象Viewとイベント処理クラスを紐付ける
-		 	        ImageView dragView = (ImageView) findViewById(R.id.imageView6);
-		 			DragViewListener listener = new DragViewListener(dragView);
-		 			dragView.setOnTouchListener(listener);
-		    	 }else if(flag == 8){
-		    		 returnValue=(String) data.getCharSequenceExtra("filepath");
-					 ItemID2=(String) data.getCharSequenceExtra("MylistID");
-
-		  	 		 a =  img1.getLeft()-32;
-		   	 		 b =img1.getTop()-32;
-		   	 		 c = img1.getRight()+a;
-		   	 		 d = img1.getBottom()+b;
-		   	 	    Rela.removeView(img1);
-		   	 // マージンを指定（左、上、右、下）
-		  			 param.setMargins(a, b, c, d);
-		  			 Rela.addView(img1, param);
-		   	 		 a1 =  img2.getLeft()-32;
-		   	 		 b1 =img2.getTop()-32;
-		   	 		 c1 = img2.getRight()+a1;
-		   	 		 d1 = img2.getBottom()+b1;
-		   	 	    Rela.removeView(img2);
-		   	 // マージンを指定（左、上、右、下）
-		  			 param1.setMargins(a1, b1, c1, d1);
-		  			 Rela.addView(img2, param1);
-		    	 	 a2 = img3.getLeft()-32;
-		       	 	 b2 = img3.getTop()-32;
-		       	 	 c2 = img3.getRight()+a2;
-		       	 	 d2 = img3.getBottom()+b2;
-		       	 	 Rela.removeView(img3);
-		       	 // マージンを指定（左、上、右、下）
-		      		 param2.setMargins(a2, b2, c2, d2);
-		      		 Rela.addView(img3, param2);
-		     	 	 a3 = img4.getLeft()-32;
-		       	 	 b3 = img4.getTop()-32;
-		       	 	 c3 = img4.getRight()+a3;
-		       	 	 d3 = img4.getBottom()+b3;
-		       	 	 Rela.removeView(img4);
-		       	 // マージンを指定（左、上、右、下）
-		      		 param3.setMargins(a3, b3, c3, d3);
-		      		 Rela.addView(img4, param3);
-		      	 	 a4 = img5.getLeft()-32;
-		       	 	 b4 = img5.getTop()-32;
-		       	 	 c4 = img5.getRight()+a4;
-		       	 	 d4 = img5.getBottom()+b4;
-		       	 	Rela.removeView(img5);
-		       	 // マージンを指定（左、上、右、下）
-		      		 param4.setMargins(a4, b4, c4, d4);
-		      		 Rela.addView(img5, param4);
-		       	 	 a5 = img6.getLeft()-32;
-		       	 	 b5 = img6.getTop()-32;
-		       	 	 c5 = img6.getRight()+a5;
-		       	 	 d5 = img6.getBottom()+b5;
-		       	 	 Rela.removeView(img6);
-		       	 // マージンを指定（左、上、右、下）
-		      		 param5.setMargins(a5, b5, c5, d5);
-		      		 Rela.addView(img6, param5);
-
-		 			if(dir.exists()){
-		 				File file = new File(returnValue);
-		 				if(file.exists()){
-		 				Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
-		 				((ImageView)findViewById(R.id.imageView7)).setImageBitmap(_bm);
-		 				}
-		 			}
-		 		     // ドラッグ対象Viewとイベント処理クラスを紐付ける
-		 	        ImageView dragView = (ImageView) findViewById(R.id.imageView7);
-		 			DragViewListener listener = new DragViewListener(dragView);
-		 			dragView.setOnTouchListener(listener);
-		    	 }
+					if(flg2){
+						usesimg.add(imglist[i]);
+						nowimg=imglist[i];
+						returnValue=(String) data.getCharSequenceExtra("filepath");
+						if(imglist[i]=="img1"){
+							ItemID1=(String) data.getCharSequenceExtra("MylistID");
+						}else if(imglist[i]=="img2"){
+							ItemID2=(String) data.getCharSequenceExtra("MylistID");
+						}else if(imglist[i]=="img3"){
+							ItemID3=(String) data.getCharSequenceExtra("MylistID");
+						}else if(imglist[i]=="img4"){
+							ItemID4=(String) data.getCharSequenceExtra("MylistID");
+						}else if(imglist[i]=="img5"){
+							ItemID5=(String) data.getCharSequenceExtra("MylistID");
+						}else if(imglist[i]=="img6"){
+							ItemID6=(String) data.getCharSequenceExtra("MylistID");
+						}else if(imglist[i]=="img7"){
+							ItemID7=(String) data.getCharSequenceExtra("MylistID");
+						}
+						flg=false;
+					}
+				}
+				
+				if(dir.exists()){
+					File file = new File(returnValue);
+					Log.d("", "returnValue="+returnValue);
+					if(file.exists()){
+					Bitmap _bm = BitmapFactory.decodeFile(file.getPath());
+						if(nowimg=="img1"){
+							img1.setImageBitmap(_bm);
+							priority.add(R.id.imageView1);
+						}else if(nowimg=="img2"){
+							img2.setImageBitmap(_bm);
+							priority.add(R.id.imageView2);
+						}else if(nowimg=="img3"){
+							img3.setImageBitmap(_bm);
+							priority.add(R.id.imageView3);
+						}else if(nowimg=="img4"){
+							img4.setImageBitmap(_bm);
+							priority.add(R.id.imageView4);
+						}else if(nowimg=="img5"){
+							img5.setImageBitmap(_bm);
+							priority.add(R.id.imageView5);
+						}else if(nowimg=="img6"){
+							img6.setImageBitmap(_bm);
+							priority.add(R.id.imageView6);
+						}else if(nowimg=="img7"){
+							img7.setImageBitmap(_bm);
+							priority.add(R.id.imageView7);
+						}
+					}
+				}
+				setImageView(nowimg);
+				flag = flag + 1 ;
 			}
+		}
+	}
+	
+	public void setImageView(String nowimg) {
+		for(int j=0;j<usesimg.size();j++){
+			if(usesimg.get(j)=="img1"){
+				a =  img1.getLeft();
+		 		b =img1.getTop();
+		 		frameLayout.removeView(img1);
+			    param.setMargins(a, b, 0, 0);
+			}else if(usesimg.get(j)=="img2"){
+				a =  img2.getLeft();
+		 		b =img2.getTop();
+		 		frameLayout.removeView(img2);
+			    param1.setMargins(a, b, 0, 0);
+			}else if(usesimg.get(j)=="img3"){
+				a =  img3.getLeft();
+		 		b =img3.getTop();
+		 		frameLayout.removeView(img3);
+			    param2.setMargins(a, b, 0, 0);
+			}else if(usesimg.get(j)=="img4"){
+				a =  img4.getLeft();
+		 		b =img4.getTop();
+		 		frameLayout.removeView(img4);
+			    param3.setMargins(a, b, 0, 0);
+			}else if(usesimg.get(j)=="img5"){
+				a =  img5.getLeft();
+		 		b =img5.getTop();
+		 		frameLayout.removeView(img5);
+			    param4.setMargins(a, b, 0, 0);
+			}else if(usesimg.get(j)=="img6"){
+				a =  img6.getLeft();
+		 		b =img6.getTop();
+		 		frameLayout.removeView(img6);
+			    param5.setMargins(a, b, 0, 0);
+			}else if(usesimg.get(j)=="img7"){
+				a =  img7.getLeft();
+		 		b =img7.getTop();
+		 		frameLayout.removeView(img7);
+			    param6.setMargins(a, b, 0, 0);
+			}
+		}
+		Log.i("31","31="+usesimg);
+		Log.i("31","nowimg="+nowimg);
+		if(nowimg=="img1"){
+		    param.setMargins(0, 0, 0, 0);
+		}else if(nowimg=="img2"){
+		    param1.setMargins(0, 0, 0, 0);
+		}else if(nowimg=="img3"){
+		    param2.setMargins(0, 0, 0, 0);
+		}else if(nowimg=="img4"){
+		    param3.setMargins(0, 0, 0, 0);
+		}else if(nowimg=="img5"){
+		    param4.setMargins(0, 0, 0, 0);
+		}else if(nowimg=="img6"){
+		    param5.setMargins(0, 0, 0, 0);
+		}else if(nowimg=="img7"){
+		    param6.setMargins(0, 0, 0, 0);
+		}
+	    
+	    for(int i=0;i<priority.size();i++){
+	    	if(priority.get(i)==R.id.imageView1){
+	    		frameLayout.addView(img1, param);
+	    	}else if(priority.get(i)==R.id.imageView2){
+	    		frameLayout.addView(img2, param1);
+	    	}else if(priority.get(i)==R.id.imageView3){
+	    		frameLayout.addView(img3, param2);
+	    	}else if(priority.get(i)==R.id.imageView4){
+	    		frameLayout.addView(img4, param3);
+	    	}else if(priority.get(i)==R.id.imageView5){
+	    		frameLayout.addView(img5, param4);
+	    	}else if(priority.get(i)==R.id.imageView6){
+	    		frameLayout.addView(img6, param5);
+	    	}else if(priority.get(i)==R.id.imageView7){
+	    		frameLayout.addView(img7, param6);
+	    	}
+	    }
+	}
+	
+	public void delesetImageView() {
+		for(int j=0;j<usesimg.size();j++){
+			if(usesimg.get(j)=="img1"){
+				a =  img1.getLeft();
+		 		b =img1.getTop();
+		 		frameLayout.removeView(img1);
+			    param.setMargins(a, b, 0, 0);
+			}else if(usesimg.get(j)=="img2"){
+				a =  img2.getLeft();
+		 		b =img2.getTop();
+		 		frameLayout.removeView(img2);
+			    param1.setMargins(a, b, 0, 0);
+			}else if(usesimg.get(j)=="img3"){
+				a =  img3.getLeft();
+		 		b =img3.getTop();
+		 		frameLayout.removeView(img3);
+			    param2.setMargins(a, b, 0, 0);
+			}else if(usesimg.get(j)=="img4"){
+				a =  img4.getLeft();
+		 		b =img4.getTop();
+		 		frameLayout.removeView(img4);
+			    param1.setMargins(a, b, 0, 0);
+			}else if(usesimg.get(j)=="img5"){
+				a =  img5.getLeft();
+		 		b =img5.getTop();
+		 		frameLayout.removeView(img5);
+			    param4.setMargins(a, b, 0, 0);
+			}else if(usesimg.get(j)=="img6"){
+				a =  img6.getLeft();
+		 		b =img6.getTop();
+		 		frameLayout.removeView(img6);
+			    param5.setMargins(a, b, 0, 0);
+			}else if(usesimg.get(j)=="img7"){
+				a =  img7.getLeft();
+		 		b =img7.getTop();
+		 		frameLayout.removeView(img7);
+			    param6.setMargins(a, b, 0, 0);
+			}
+		}
+		Log.i("31","31="+usesimg);
+
+	    for(int i=0;i<priority.size();i++){
+	    	if(priority.get(i)==R.id.imageView1){
+	    		frameLayout.addView(img1, param);
+	    	}else if(priority.get(i)==R.id.imageView2){
+	    		frameLayout.addView(img2, param1);
+	    	}else if(priority.get(i)==R.id.imageView3){
+	    		frameLayout.addView(img3, param2);
+	    	}else if(priority.get(i)==R.id.imageView4){
+	    		frameLayout.addView(img4, param3);
+	    	}else if(priority.get(i)==R.id.imageView5){
+	    		frameLayout.addView(img5, param4);
+	    	}else if(priority.get(i)==R.id.imageView6){
+	    		frameLayout.addView(img6, param5);
+	    	}else if(priority.get(i)==R.id.imageView7){
+	    		frameLayout.addView(img7, param6);
+	    	}
+	    }
+	}
+	
+	public class DragViewListener implements OnTouchListener {
+		// ドラッグ対象のView
+		private ImageView dragView;
+		// ドラッグ中に移動量を取得するための変数
+		private int oldx;
+		private int oldy;
+		
+		public DragViewListener(ImageView dragView) {
+			this.dragView = dragView;
+		}
+
+		@Override
+		public boolean onTouch(View view, MotionEvent event) {
+			// タッチしている位置取得
+			int x = (int) event.getRawX();
+			int y = (int) event.getRawY();
+			FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(WC, WC);
+			
+
+			switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN://タッチイベント開始
+				Log.i("test","view="+view.getId());
+				if(R.id.imageView1==selectedView){
+					img1.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+				}else if(R.id.imageView2==selectedView){
+					img2.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+				}else if(R.id.imageView3==selectedView){
+					img3.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+				}else if(R.id.imageView4==selectedView){
+					img4.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+				}else if(R.id.imageView5==selectedView){
+					img5.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+				}else if(R.id.imageView6==selectedView){
+					img6.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+				}else if(R.id.imageView7==selectedView){
+					img7.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+				}
+				if(R.id.imageView1==view.getId()){
+					if(view.getId()!=selectedView){
+						img1.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
+						selectedView=view.getId();
+					}else{
+						selectedView=0;
+					}
+				}else if(R.id.imageView2==view.getId()){
+					if(view.getId()!=selectedView){
+						img2.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
+						selectedView=view.getId();
+					}else{
+						selectedView=0;
+					}
+				}else if(R.id.imageView3==view.getId()){
+					if(view.getId()!=selectedView){
+						img3.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
+						selectedView=view.getId();
+					}else{
+						selectedView=0;
+					}
+				}else if(R.id.imageView4==view.getId()){
+					if(view.getId()!=selectedView){
+						img4.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
+						selectedView=view.getId();
+					}else{
+						selectedView=0;
+					}
+				}else if(R.id.imageView5==view.getId()){
+					if(view.getId()!=selectedView){
+						img5.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
+						selectedView=view.getId();
+					}else{
+						selectedView=0;
+					}
+				}else if(R.id.imageView6==view.getId()){
+					if(view.getId()!=selectedView){
+						img6.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
+						selectedView=view.getId();
+					}else{
+						selectedView=0;
+					}
+				}else if(R.id.imageView7==view.getId()){
+					if(view.getId()!=selectedView){
+						img7.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
+						selectedView=view.getId();
+					}else{
+						selectedView=0;
+					}
+				}
+				
+				break;
+			case MotionEvent.ACTION_MOVE:
+				// 今回イベントでのView移動先の位置
+				int left = dragView.getLeft() + (x - oldx);
+				int top = dragView.getTop() + (y - oldy);
+				// Viewを移動する
+				dragView.layout(left, top, left + dragView.getWidth(), top + dragView.getHeight());
+				Log.d("1","left="+left+"top"+top);
+				break;
+			case MotionEvent.ACTION_UP://タッチイベント終了
+				int left1 = dragView.getLeft();
+				int top1 = dragView.getTop();
+				frameLayout.removeView(dragView);
+			    params.setMargins(left1, top1, 0, 0);
+			    frameLayout.addView(dragView,params);
+			    setImageView("");
+			    break;
+			    
+			}
+
+			// 今回のタッチ位置を保持
+			oldx = x;
+			oldy = y;
+			// イベント処理完了
+			return true;
 		}
 	}
 }

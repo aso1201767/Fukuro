@@ -101,6 +101,7 @@ public class itemDetails extends Activity implements OnClickListener {
 			iIntent.putExtra("Fpath", itempath);
 			iIntent.putExtra("id", id);
 			iIntent.putExtra("previousview","itemDetails");
+			iIntent.putExtra("category",category);
 			iIntent.putExtra("memo",memo);
 			startActivity(iIntent);
 			break;

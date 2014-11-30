@@ -29,6 +29,14 @@ public class ItemList extends Activity implements OnItemClickListener {
 	private List<String> filename = new ArrayList<String>();
 	private List<String> favoList = new ArrayList<String>();
 	private DBHelper dbHelper = new DBHelper(this);
+	private String category_id=null;
+	private String Itemid1=null;
+	private String Itemid2=null;
+	private String Itemid3=null;
+	private String Itemid4=null;
+	private String Itemid5=null;
+	private String Itemid6=null;
+	private String Itemid7=null;
 	public static SQLiteDatabase db;
 
 	GridView gridview;
@@ -94,8 +102,18 @@ public class ItemList extends Activity implements OnItemClickListener {
 		String destPath = null;
 
 		//ArrayAdapter<String> adapter = new ArrayAdapter<String>(Mylist.this, R.id.gridview);
-
-		Cursor cr = db.rawQuery("SELECT * FROM Item WHERE NOT category_id =7 ORDER BY category_id DESC", null);
+		Intent vintent = getIntent();
+		category_id=vintent.getStringExtra("category_id");
+		Itemid1=vintent.getStringExtra("Itemid1");
+		Itemid2=vintent.getStringExtra("Itemid2");
+		Itemid3=vintent.getStringExtra("Itemid3");
+		Itemid4=vintent.getStringExtra("Itemid4");
+		Itemid5=vintent.getStringExtra("Itemid5");
+		Itemid6=vintent.getStringExtra("Itemid6");
+		Itemid7=vintent.getStringExtra("Itemid7");
+		Cursor cr = db.rawQuery("SELECT * FROM Item WHERE category_id =\""+category_id+"\" and not item_id=\""+Itemid1
+				+"\" and not item_id=\""+Itemid2+"\" and not item_id=\""+Itemid3+ "\" and not item_id=\""+Itemid4+ "\" and not item_id=\""+Itemid5
+				+ "\" and not item_id=\""+Itemid6+ "\"and not item_id=\""+Itemid7+ "\" ORDER BY item", null);
 		cr.moveToFirst();
 
 		//プラスボタン
@@ -106,8 +124,8 @@ public class ItemList extends Activity implements OnItemClickListener {
 		//プラスボタン画像をfileListに挿入
 
 		for(int cnt = 0; cnt < cr.getCount(); cnt++){
-//			destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(1);
-			destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(1);
+			destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(1);
+//			destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(1);
 			System.out.println(cr.getString(1));
 
 			// List<String> imgList にはファイルのパスを入れる

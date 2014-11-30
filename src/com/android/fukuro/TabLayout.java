@@ -103,6 +103,11 @@ public class TabLayout extends Activity{
         startActivity(intent);
         Log.d("move","move3");
     }
+	void move1(Class<?> move,String id,String value) {
+        intent = new Intent(this, move);
+        intent.putExtra(id, value);
+        startActivity(intent);
+    }
 //	void move2(){
 //		intent = new Intent(getApplicationContext(),Uplist.class);
 //		startActivity(intent);
@@ -227,8 +232,8 @@ public class TabLayout extends Activity{
 		//プラスボタン画像をfileListに挿入
 
 		for(int cnt = 1; cnt <= cr.getCount(); cnt++){
-//			destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(1);
-			destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(1);
+			destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(1);
+//			destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(1);
 			System.out.println(cr.getString(1));
 
 			// List<String> imgList にはファイルのパスを入れる
@@ -237,6 +242,7 @@ public class TabLayout extends Activity{
 			favoList.add(cr.getString(3));
 			cr.moveToNext();
 		}
+		
 		
 		ReturnValue value = new ReturnValue();
 		value.rImgList = imgList;
@@ -280,8 +286,8 @@ public class TabLayout extends Activity{
 		 cr.moveToFirst();
 				
 		 for(int cnt = 0; cnt < cr.getCount(); cnt++){
-//		 	destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(0);
-		 	destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(0);
+		 	destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(0);
+//		 	destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(0);
 
 		 	// List<String> imgList にはファイルのパスを入れる
 		 	imgList.add(destPath);
@@ -359,7 +365,7 @@ public class TabLayout extends Activity{
 	    Fragment fragment(){
 	    	return _fragment;
 	    }
-	      
+
 	    @Override
 	    public void onTabReselected(Tab tab, FragmentTransaction ft) {
 	    	_fragment = Fragment.instantiate(_activity, _cls.getName());
