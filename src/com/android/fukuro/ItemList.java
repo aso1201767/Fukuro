@@ -124,8 +124,8 @@ public class ItemList extends Activity implements OnItemClickListener {
 		//プラスボタン画像をfileListに挿入
 
 		for(int cnt = 0; cnt < cr.getCount(); cnt++){
-			destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(1);
-//			destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(1);
+//			destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(1);
+			destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(1);
 			System.out.println(cr.getString(1));
 
 			// List<String> imgList にはファイルのパスを入れる

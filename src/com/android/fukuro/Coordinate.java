@@ -57,8 +57,6 @@ public class Coordinate extends Activity implements View.OnClickListener  {
     private String previousview=null;
     private String[] imglist = { "img1", "img2", "img3", "img4", "img5", "img6", "img7"};
     int flag = 1;
-	File dir =new File("/data/data/com.android.fukuro/Item");
-	//private RelativeLayout Rela;
 	private FrameLayout frameLayout;
 	 String MylistID = null;
 	 String ItemID = "1";
@@ -157,8 +155,8 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 			cr.moveToFirst();
 		    
 			for(int cnt = 1; cnt <= cr.getCount(); cnt++){
-				destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(0);
-	//			destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(1);
+//				destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(0);
+				destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(1);
 				// List<String> imgList にはファイルのパスを入れる
 				itemPath.add(destPath);
 				item_priority.add(cr.getString(1));
@@ -345,8 +343,8 @@ public class Coordinate extends Activity implements View.OnClickListener  {
         		 
         		 try {
         			 // sdcardフォルダを指定
-        			 File root = new File("/data/data/com.android.fukuro/Item");
-//        			 File root = new File(Environment.getExternalStorageDirectory() + "/Item");
+//        			 File root = new File("/data/data/com.android.fukuro/Item");
+        			 File root = new File(Environment.getExternalStorageDirectory() + "/Item");
 
         			 // 保存処理開始
         			 FileOutputStream fos = null;
@@ -373,8 +371,8 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 	        		 
 	        		 try {
 	        			 // sdcardフォルダを指定
-	        			 File root = new File("/data/data/com.android.fukuro/Item");
-	//        			 File root = new File(Environment.getExternalStorageDirectory() + "/Item");
+//	        			 File root = new File("/data/data/com.android.fukuro/Item");
+	        			 File root = new File(Environment.getExternalStorageDirectory() + "/Item");
 	
 	        			 // 保存処理開始
 	        			 FileOutputStream fos = null;
@@ -517,7 +515,6 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 					}
 				}
 				
-				if(dir.exists()){
 					File file = new File(returnValue);
 					Log.d("", "returnValue="+returnValue);
 					if(file.exists()){
@@ -545,7 +542,6 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 							priority.add(R.id.imageView7);
 						}
 					}
-				}
 				setImageView(nowimg);
 				flag = flag + 1 ;
 			}
