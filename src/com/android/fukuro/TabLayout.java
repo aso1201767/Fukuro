@@ -46,13 +46,13 @@ public class TabLayout extends Activity{
 	private List<String> imgList = new ArrayList<String>();
 	private List<Integer> filename = new ArrayList<Integer>();
 	private List<String> favoList = new ArrayList<String>();
-	private List<Integer> itemid = new ArrayList<Integer>();
+	private List<String> itemid = new ArrayList<String>();
 	private List<String> memoList = new ArrayList<String>();
 	private List<String> nameList = new ArrayList<String>();
 	private List<String> categoryList = new ArrayList<String>();
 	private static final int ITEM1 = Menu.FIRST;
 	private static final String CUTflg = "CUTflg1";
-	private static final String PITflg = "PITflg";
+	private static final String PITflg = "PITflg1";
 	Fragment MylistFragment;
 	Fragment ItemMylistFragment;
 	boolean mylist_flg =false;
@@ -267,7 +267,7 @@ public class TabLayout extends Activity{
 	
 	class ReturnValue_item {
 		public List<String> rImgList = new ArrayList<String>();
-		public List<Integer> ritemid = new ArrayList<Integer>();
+		public List<String> ritemid = new ArrayList<String>();
 		public List<String> rmemoList = new ArrayList<String>();
 		public List<String> nameList = new ArrayList<String>();
 		public List<String> rcategoryList = new ArrayList<String>();
@@ -275,7 +275,7 @@ public class TabLayout extends Activity{
 	
 	public ReturnValue_item itemmylist_db() {
 		imgList=new ArrayList<String>();
-		itemid=new ArrayList<Integer>();
+		itemid=new ArrayList<String>();
 		memoList=new ArrayList<String>();
 		nameList=new ArrayList<String>();
 		categoryList = new ArrayList<String>();
@@ -284,14 +284,15 @@ public class TabLayout extends Activity{
 
 		 Cursor cr = db.rawQuery("SELECT item, item_id, memo,category_id FROM Item WHERE NOT category_id = \"7\" ORDER BY category_id DESC", null);
 		 cr.moveToFirst();
-				
+			
 		 for(int cnt = 0; cnt < cr.getCount(); cnt++){
 //		 	destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(0);
 		 	destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(0);
 
 		 	// List<String> imgList にはファイルのパスを入れる
 		 	imgList.add(destPath);
-		 	itemid.add(cnt,cr.getInt(1));
+		 	itemid.add(cr.getString(1));
+		 	Log.d("","2"+cr.getInt(1));
 		 	memoList.add(cr.getString(2));
 		 	nameList.add(cr.getString(0));
 		 	categoryList.add(cr.getString(3));
@@ -304,6 +305,7 @@ public class TabLayout extends Activity{
 		value.rmemoList=memoList;
 		value.rcategoryList=categoryList;
 		value.nameList=nameList;
+		Log.d("tab","ritemid"+itemid);
 		return value;
 	}
 	
@@ -390,7 +392,8 @@ public class TabLayout extends Activity{
 	    	}
 	    	if(mylist_flg){
 	    		unselected_mylist();
-	    	}else if(itemmylist_flg){
+	    	}
+	    	if(itemmylist_flg){
 	    		unselected_itemmylist();
 	    	}
 	    }

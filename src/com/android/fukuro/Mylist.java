@@ -34,7 +34,11 @@ public class Mylist extends Fragment implements OnItemClickListener {
 	private GridAdapter adapter=null;
 	Context context;
 	Bitmap bmp;
+	Bitmap bmp2;
+	Bitmap bmp3;
 	GridView gridview;
+	Resources r;
+	
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,7 +60,7 @@ public class Mylist extends Fragment implements OnItemClickListener {
 		imgList = new ArrayList<String>();
 		filename = new ArrayList<Integer>();
 		favoList = new ArrayList<String>();
-
+		
 		// GridViewのインスタンスを生成
 		gridview = tabLayout.setgrid();
 		// BaseAdapter を継承したGridAdapterのインスタンスを生成
@@ -109,7 +113,15 @@ public class Mylist extends Fragment implements OnItemClickListener {
 		// TODO 自動生成されたメソッド・スタブ
 		super.onDestroy();
 		adapter=null;
-		bmp.recycle();
+		if(bmp!=null){
+			bmp.recycle();
+		}
+		if(bmp2!=null){
+			bmp2.recycle();
+		}
+		if(bmp3!=null){
+			bmp3.recycle();
+		}
 		//dbHelper.close();
 	}
 
@@ -134,6 +146,9 @@ public class Mylist extends Fragment implements OnItemClickListener {
 			String mFilepath = imgList.get(position);
 			String mFavo =favoList.get(position);
 			Log.d("image","favo="+favoList);
+			Resources r = getResources();
+			bmp2 = BitmapFactory.decodeResource(r,R.drawable.no_star);
+			bmp3 = BitmapFactory.decodeResource(r,R.drawable.white);
 
 			ViewHolder holder;
 			if (convertView == null) {
@@ -148,10 +163,6 @@ public class Mylist extends Fragment implements OnItemClickListener {
 			else {
 				holder = (ViewHolder) convertView.getTag();
 			}
-
-			Resources r = getResources();
-			Bitmap bmp2 = BitmapFactory.decodeResource(r,R.drawable.no_star);
-			Bitmap bmp3 = BitmapFactory.decodeResource(r,R.drawable.white);
 			
 			if(position != 0){  //プラスボタン以外の画像読み出し
 				bmp = BitmapFactory.decodeFile(mFilepath);
@@ -164,7 +175,7 @@ public class Mylist extends Fragment implements OnItemClickListener {
 				}
 
 			}else{  //プラスボタンの画像読み出し
-				Bitmap bmp = BitmapFactory.decodeResource(r,R.drawable.plus);
+				bmp = BitmapFactory.decodeResource(r,R.drawable.plus);
 				holder.imageView.setImageBitmap(bmp);
 				bmp = Bitmap.createScaledBitmap(bmp, 120, 160, true);
 				holder.imageView.setImageBitmap(bmp);

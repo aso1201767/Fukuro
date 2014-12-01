@@ -17,15 +17,6 @@
         android:layout_marginBottom="12dp"
         android:background="#00BBFF" />
 
-<Button
-    android:id="@+id/draw_back_btn"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignRight="@+id/view1"
-    android:layout_alignTop="@+id/RadioGroup"
-    android:layout_marginTop="64dp"
-    android:text="@string/back" />
-
 <TextView
     android:id="@+id/textimage"
     android:layout_width="wrap_content"
@@ -36,13 +27,22 @@
     android:text="撮影画像イメージ"
     android:textAppearance="?android:attr/textAppearanceMedium" />
 
+<Button
+    android:id="@+id/infotutendbtn"
+    style="?android:attr/buttonStyleSmall"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_alignRight="@+id/imageseek"
+    android:text="次へ" />
+
 <RadioGroup
     android:id="@+id/RadioGroup"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_alignRight="@+id/draw_back_btn"
+    android:layout_alignParentLeft="true"
     android:layout_below="@+id/view1"
-    android:layout_marginTop="20dp"
+    android:layout_marginTop="38dp"
     android:orientation="horizontal" >
 
     <RadioButton
@@ -73,14 +73,14 @@
         android:checked="false" />
 </RadioGroup>
 
-<TextView
-    android:id="@+id/textbairitsu"
+<Button
+    android:id="@+id/draw_back_btn"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_below="@+id/draw_back_btn"
-    android:layout_toLeftOf="@+id/textimage"
-    android:text="倍率調整"
-    android:textAppearance="?android:attr/textAppearanceMedium" />
+    android:layout_alignBottom="@+id/RadioGroup"
+    android:layout_alignParentRight="true"
+    android:layout_marginBottom="14dp"
+    android:text="@string/back" />
 
 <ImageView
     android:id="@+id/imageseek"
@@ -90,13 +90,13 @@
     android:layout_below="@+id/textbairitsu"
     android:src="@drawable/seek" />
 
-<Button
-    android:id="@+id/infotutendbtn"
-    style="?android:attr/buttonStyleSmall"
+<TextView
+    android:id="@+id/textbairitsu"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    android:layout_alignRight="@+id/imageseek"
-    android:text="撮影しよう！" />
+    android:layout_above="@+id/infotutendbtn"
+    android:layout_alignLeft="@+id/RadioGroup"
+    android:text="倍率調整"
+    android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

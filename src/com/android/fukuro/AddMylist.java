@@ -11,6 +11,7 @@ public class AddMylist extends Activity {
 		// TODO 自動生成されたメソッド・スタブ
 		super.onCreate(savedInstanceState);
 
+		
 		Toast.makeText(this, "テスト", Toast.LENGTH_LONG).show();
 	}
 }

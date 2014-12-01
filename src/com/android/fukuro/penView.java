@@ -50,8 +50,7 @@ public class penView extends ImageView {
 	String camerapath=null;
 	FileInputStream in = null;
 	String picname=null;
-	String info=null;
-	
+	String info=null;	
 
 	// タッチの状態管理
 	private static final int TOUCH_NONE = 0;
@@ -316,7 +315,7 @@ public class penView extends ImageView {
 	
 	//保存処理
 	public void saveBitmapToSd() {
-		
+		if(draw_list.size()!=0){
 		int width = result.getWidth();
 		 int height = result.getHeight();
 		 int pixels[] = new int[width * height];
@@ -355,6 +354,7 @@ public class penView extends ImageView {
 //				file.delete();
 //				Log.d("testo01","file="+file);
 		 // sdcardフォルダを指定
+			// File root = new File("/data/data/com.android.fukuro/Item/");
 		 File root = new File(Environment.getExternalStorageDirectory() + "/Item/");
 
 		 // 保存処理開始
@@ -370,6 +370,7 @@ public class penView extends ImageView {
 		 } catch (Exception e) {
 		 Log.e("Error", "" + e.toString());
 		 }
+	}
 	}
 
 }

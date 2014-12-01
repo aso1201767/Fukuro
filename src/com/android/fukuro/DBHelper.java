@@ -134,7 +134,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 		ItemList = new ArrayList<String>();
 
-		String sql = "INSERT INTO Item(item_id,item, category_id, memo) VALUES(\""+ ID +"\",\"" + picpath + "\",\"" + categorynum + "\",\"" + memovalue +"\")";
+		String sql = "REPLACE INTO Item(item_id,item, category_id, memo) VALUES(\""+ ID +"\",\"" + picpath + "\",\"" + categorynum + "\",\"" + memovalue +"\")";
 		db.execSQL(sql);
 	}
 	

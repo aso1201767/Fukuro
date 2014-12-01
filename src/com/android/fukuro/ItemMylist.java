@@ -28,14 +28,14 @@ public class ItemMylist extends Fragment implements OnItemClickListener {
 	public TabLayout tabLayout;
 	// 要素をArrayListで設定
 	private List<String> imgList = new ArrayList<String>();
-	private List<Integer> itemid = new ArrayList<Integer>();
+	private List<String> itemid = new ArrayList<String>();
 	private List<String> categoryList=new ArrayList<String>();
 	private List<String> memoList = new ArrayList<String>();
 	private List<String> nameList = new ArrayList<String>();
 	public static SQLiteDatabase db;
 	private GridAdapter adapter=null;
 	Context context;
-	Bitmap bmp;
+	Bitmap bmp=null;
 	GridView gridview;
 
 	// @Override
@@ -61,7 +61,7 @@ public class ItemMylist extends Fragment implements OnItemClickListener {
 		super.onResume();
 
 		imgList = new ArrayList<String>();
-		itemid = new ArrayList<Integer>();
+		itemid = new ArrayList<String>();
 		categoryList = new ArrayList<String>();
 		memoList = new ArrayList<String>();
 		nameList = new ArrayList<String>();
@@ -87,7 +87,7 @@ public class ItemMylist extends Fragment implements OnItemClickListener {
 	public void onStop() {
 		// TODO 自動生成されたメソッド・スタブ
 		super.onStop();
-		
+		Log.d("ItemMylist","onStart");
 	}
 
 	@Override
@@ -104,6 +104,7 @@ public class ItemMylist extends Fragment implements OnItemClickListener {
 		vIntent.putExtra("memo", memoList.get(position));
 		vIntent.putExtra("category", categoryList.get(position));
 		vIntent.putExtra("Fname",nameList.get(position));
+		Log.e("name1","itemid="+itemid);
 		Log.e("name1","name2="+nameList.get(position));
 		startActivity(vIntent);
 	}
@@ -138,7 +139,9 @@ public class ItemMylist extends Fragment implements OnItemClickListener {
 		// TODO 自動生成されたメソッド・スタブ
 		super.onDestroy();
 		adapter=null;
-		bmp.recycle();
+		if(bmp!=null){
+			bmp.recycle();
+		}
 	}
 
 	class ViewHolder {
@@ -174,7 +177,7 @@ public class ItemMylist extends Fragment implements OnItemClickListener {
 
 
 			//if(position != 0){  //プラスボタン以外の画像読み出し
-				Bitmap bmp = BitmapFactory.decodeFile(mFilepath);
+				bmp = BitmapFactory.decodeFile(mFilepath);
 				bmp = Bitmap.createScaledBitmap(bmp, 120, 160, true);
 				holder.imageView.setImageBitmap(bmp);
 			//}

@@ -1,5 +1,7 @@
 package com.android.fukuro;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -17,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class itemDetails extends Activity implements OnClickListener {
 
@@ -29,6 +32,7 @@ public class itemDetails extends Activity implements OnClickListener {
 	private Intent iIntent=null;
 	private String category=null;
 	private String Fname=null;
+	private String catename=null;
 	//public Boolean bFavo = false;
 
 	//Button favo;
@@ -50,19 +54,17 @@ public class itemDetails extends Activity implements OnClickListener {
 		// 現在のintentを取得する
 		Intent vIntent = getIntent();
 		// intentから指定キーの文字列を取得する
-		String imgPath = vIntent.getStringExtra("itemname");
-		id = vIntent.getIntExtra("ID",0);
+		stID= vIntent.getStringExtra("ID");
 		itempath= vIntent.getStringExtra("itemname");
 		memo=vIntent.getStringExtra("memo");
 		category=vIntent.getStringExtra("category");
 		Fname=vIntent.getStringExtra("Fname");
 		//ImageName = imgNmae();
-		stID = String.format("%04d", id);
-		Log.d("id","id"+stID);
+		//stID = String.format("%04d", id);
 		
 		//画像表示
 		String pic = null;
-		pic = imgPath;
+		pic = itempath;
 		//pic = "/data/data/" + this.getPackageName() + "/Item/" + cr.getString(0);
 		System.out.println(pic);
 		ImageView iv = (ImageView)findViewById(R.id.imageView1);
@@ -75,8 +77,40 @@ public class itemDetails extends Activity implements OnClickListener {
 		edit.setOnClickListener(this);
 		imgeditBtn = (Button)findViewById(R.id.imgeditBtn);
 		imgeditBtn.setOnClickListener(this);
-		
+	}
 
+	@Override
+	protected void onRestart() {
+		// TODO 自動生成されたメソッド・スタブ
+		super.onRestart();
+	}
+
+
+	@Override
+	protected void onResume() {
+		// TODO 自動生成されたメソッド・スタブ
+		super.onResume();
+		Log.d("id","stID"+stID);
+		TextView tmemo=(TextView)findViewById(R.id.textView2);
+		tmemo.setText(memo);
+		if(category.equals("1")){
+			catename="Tシャツ";
+		}else if(category.equals("2")){
+			catename="シャツ";
+		}else if(category.equals("3")){
+			catename="ニット・カーディガン";
+		}else if(category.equals("4")){
+			catename="ジャケット・コート";
+		}else if(category.equals("5")){
+			catename="パンツ";
+		}else if(category.equals("6")){
+			catename="ショートパンツ";
+		}else if(category.equals("7")){
+			catename="全身";
+		}
+		
+		TextView tcate=(TextView)findViewById(R.id.cateTxt);
+		tcate.setText(catename);
 	}
 
 
@@ -99,7 +133,8 @@ public class itemDetails extends Activity implements OnClickListener {
 			//コメント編集
 			iIntent = new Intent(this, InfoEditActivity.class);
 			iIntent.putExtra("Fpath", itempath);
-			iIntent.putExtra("id", id);
+			iIntent.putExtra("Fname",Fname);
+			iIntent.putExtra("id", stID);
 			iIntent.putExtra("previousview","itemDetails");
 			iIntent.putExtra("category",category);
 			iIntent.putExtra("memo",memo);
@@ -115,6 +150,9 @@ public class itemDetails extends Activity implements OnClickListener {
 					// TODO 自動生成されたメソッド・スタブ
 					String sql = "DELETE FROM Item WHERE item_id = '" + stID + "'";
 					db.execSQL(sql);
+					//sd画像削除
+					File file = new File(itempath);
+					file.delete();
 					finish();
 				}
 			});

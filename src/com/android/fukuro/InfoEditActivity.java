@@ -45,7 +45,8 @@ public class InfoEditActivity extends Activity implements View.OnClickListener{
 	String picname = null;
 	String category = null;
 	String previousview=null;
-	Integer id=0;
+	String id=null;
+	String catename=null;
 	private ArrayList<String> ItemList = new ArrayList<String>();
 
 	@Override
@@ -74,11 +75,26 @@ public class InfoEditActivity extends Activity implements View.OnClickListener{
 		path = inte.getStringExtra("Fpath");
 		picname = inte.getStringExtra("Fname");
 		previousview = inte.getStringExtra("previousview");
-		
 		if(previousview.equals("itemDetails")){//前画面がitemDetails
-			id=inte.getIntExtra("id", 0);
+			id=inte.getStringExtra("id");
 			memo = inte.getStringExtra("memo");
 			text1.setText(memo);
+			category=inte.getStringExtra("category");
+			if(category.equals("1")){
+				catename="Tシャツ";
+			}else if(category.equals("2")){
+				catename="シャツ";
+			}else if(category.equals("3")){
+				catename="ニット・カーディガン";
+			}else if(category.equals("4")){
+				catename="ジャケット・コート";
+			}else if(category.equals("5")){
+				catename="パンツ";
+			}else if(category.equals("6")){
+				catename="ショートパンツ";
+			}else if(category.equals("7")){
+				catename="全身";
+			}
 		}
 		
 		Log.d("check",path);
@@ -119,10 +135,8 @@ public class InfoEditActivity extends Activity implements View.OnClickListener{
          
 //         if(tempo_prefecture != null){
         if(previousview.equals("itemDetails")){//前画面がitemDetails
-        	String category=inte.getStringExtra("Fpath");
-        	category="シャツ";
         	ArrayAdapter<String> myAdap = (ArrayAdapter) spinner.getAdapter();
-        	int spinnerPosition = myAdap.getPosition(category);
+        	int spinnerPosition = myAdap.getPosition(catename);
             spinner.setSelection(spinnerPosition);
         }	  		    
 //        	} 
@@ -184,12 +198,23 @@ public class InfoEditActivity extends Activity implements View.OnClickListener{
 		switch(v.getId()){
 
 		case R.id.button1:
-
-			category = str.toString();
+			if(previousview.equals("itemDetails")){//前画面がitemDetails
+				//String ID = String.format("%04d", id);
+				category = str.toString();
+				if(memo==null){
+					memo="";
+				}
+				String sql = "REPLACE INTO Item(item_id,item, category_id, memo) VALUES(\""+ id +"\",\"" + picname + "\",\"" + category + "\",\"" + memo +"\")";
+				db.execSQL(sql);
+			}else{
+				category = str.toString();
+				if(memo==null){
+					memo="";
+				}
 
 			this.dbHelper.InsertItem(db,picname,category,memo);
 
-			String sql2 = "select Item_id from Item order by Item_id";
+			String sql2 = "select memo from Item order by Item_id";
 
 			Cursor c2 = db.rawQuery(sql2, null);
 
@@ -202,6 +227,7 @@ public class InfoEditActivity extends Activity implements View.OnClickListener{
 			}
 
 			ItemList = new ArrayList<String>();
+			}
 
 			break;
 

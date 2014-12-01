@@ -83,8 +83,8 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.coordinate);
 		Log.i("coor","onCreate");
-
         super.onCreate(savedInstanceState);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 	    ImageButton imgbutton = (ImageButton)findViewById(R.id.addbtn);
         Button btn1 =(Button)findViewById(R.id.savebtn);
         Button upbtn=(Button)findViewById(R.id.upbtn);
@@ -148,15 +148,17 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 
 	    Intent intent= getIntent();
 	    previousview=intent.getStringExtra("previousview");
+	    Log.d("","i");
 	    if(previousview.equals("MylistDetails")){
 	    	MylistID=intent.getStringExtra("ID");
+	    	Log.d("11","MylistID"+MylistID);
 		    //再編集
 		    Cursor cr = db.rawQuery("select i.item,mm.item_priority,mm.item_position_L,mm.item_position_T,mm.magni,i.item_id from Mylistmaking mm,Item i where mm.mylist_id=\""+MylistID+"\" and mm.item_id=i.item_id order by item_priority", null);
 			cr.moveToFirst();
 		    
 			for(int cnt = 1; cnt <= cr.getCount(); cnt++){
 //				destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(0);
-				destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(1);
+				destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(0);
 				// List<String> imgList にはファイルのパスを入れる
 				itemPath.add(destPath);
 				item_priority.add(cr.getString(1));
@@ -166,6 +168,7 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 				item_idlist.add(cr.getString(5));
 				cr.moveToNext();
 			}
+			Log.d("","itemPath="+itemPath);
 			for(int i=0;i<itemPath.size();i++){
 				File file = new File(itemPath.get(i));
 				usesimg.add(imglist[i]);
@@ -269,6 +272,8 @@ public class Coordinate extends Activity implements View.OnClickListener  {
      	    });
 	}
 	
+	
+	
 //	    imgbutton.setOnClickListener(new OnClickListener() {
 
 //	private void setContentView(SampleView mView2) {
@@ -289,16 +294,17 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-//		if (id == R.id.action_settings) {
-//			return true;
-//		}
+		if(id == android.R.id.home){
+            finish();  
+            return true;  
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -459,6 +465,8 @@ public class Coordinate extends Activity implements View.OnClickListener  {
         	 }
         	 break;
          case R.id.delebtn:
+        	 Log.i("","imglist="+imglist);
+        	 Log.i("","priority="+priority);
         	 if(priority.size()==0 ||selectedView==0){
         	 }else{
 	        	 for(int i=0;i<priority.size();i++){
@@ -467,6 +475,21 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 		        		 delesetImageView();
 		        		 usesimg.remove(i);
 		        		 flag = flag - 1 ;
+		        		 if(imglist[i]=="img1"){
+								ItemID1="";
+							}else if(imglist[i]=="img2"){
+								ItemID2="";
+							}else if(imglist[i]=="img3"){
+								ItemID3="";
+							}else if(imglist[i]=="img4"){
+								ItemID4="";
+							}else if(imglist[i]=="img5"){
+								ItemID5="";
+							}else if(imglist[i]=="img6"){
+								ItemID6="";
+							}else if(imglist[i]=="img7"){
+								ItemID7="";
+							}
 	        		 }
 	        	 }
         	 }
@@ -707,65 +730,65 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 			case MotionEvent.ACTION_DOWN://タッチイベント開始
 				Log.i("test","view="+view.getId());
 				if(R.id.imageView1==selectedView){
-					img1.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+					//img1.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
 				}else if(R.id.imageView2==selectedView){
-					img2.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+					//img2.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
 				}else if(R.id.imageView3==selectedView){
-					img3.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+					//img3.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
 				}else if(R.id.imageView4==selectedView){
-					img4.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+					//img4.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
 				}else if(R.id.imageView5==selectedView){
-					img5.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+					//img5.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
 				}else if(R.id.imageView6==selectedView){
-					img6.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+					//img6.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
 				}else if(R.id.imageView7==selectedView){
-					img7.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+					//img7.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
 				}
 				if(R.id.imageView1==view.getId()){
 					if(view.getId()!=selectedView){
-						img1.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
+						//img1.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
 						selectedView=view.getId();
 					}else{
 						selectedView=0;
 					}
 				}else if(R.id.imageView2==view.getId()){
 					if(view.getId()!=selectedView){
-						img2.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
+						//img2.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
 						selectedView=view.getId();
 					}else{
 						selectedView=0;
 					}
 				}else if(R.id.imageView3==view.getId()){
 					if(view.getId()!=selectedView){
-						img3.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
+						//img3.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
 						selectedView=view.getId();
 					}else{
 						selectedView=0;
 					}
 				}else if(R.id.imageView4==view.getId()){
 					if(view.getId()!=selectedView){
-						img4.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
+						//img4.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
 						selectedView=view.getId();
 					}else{
 						selectedView=0;
 					}
 				}else if(R.id.imageView5==view.getId()){
 					if(view.getId()!=selectedView){
-						img5.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
+						//img5.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
 						selectedView=view.getId();
 					}else{
 						selectedView=0;
 					}
 				}else if(R.id.imageView6==view.getId()){
 					if(view.getId()!=selectedView){
-						img6.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
+						//img6.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
 						selectedView=view.getId();
 					}else{
 						selectedView=0;
 					}
 				}else if(R.id.imageView7==view.getId()){
 					if(view.getId()!=selectedView){
-						img7.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
+						//img7.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
 						selectedView=view.getId();
 					}else{
 						selectedView=0;

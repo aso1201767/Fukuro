@@ -12,14 +12,14 @@
     <FrameLayout
         android:id="@+id/frame"
         android:layout_width="300dp"
-        android:layout_height="380dp"
-        android:background="@color/tab_selected" >
+        android:layout_height="380dp" >
 
         <ImageView
             android:id="@+id/imageView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="#00000000" />
 
         <ImageView
             android:id="@+id/imageView2"
@@ -66,7 +66,7 @@
         android:layout_alignBaseline="@+id/delebtn"
         android:layout_alignBottom="@+id/delebtn"
         android:layout_toRightOf="@+id/delebtn"
-        android:text="下" />
+        android:background="@drawable/down" />
 
     <Button
         android:id="@+id/upbtn"
@@ -75,7 +75,7 @@
         android:layout_alignBaseline="@+id/downbtn"
         android:layout_alignBottom="@+id/downbtn"
         android:layout_toRightOf="@+id/downbtn"
-        android:text="上" />
+        android:background="@drawable/up" />
 
     <Button
         android:id="@+id/savebtn"
@@ -92,7 +92,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/frame"
         android:layout_alignParentBottom="true"
-        android:text="削除" />
+        android:background="@drawable/dusttest" />
 
     <Spinner
         android:id="@+id/spinner1"
@@ -105,8 +105,8 @@
         android:id="@+id/addbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/frame"
-        android:layout_toRightOf="@+id/savebtn"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/spinner1"
         android:src="@drawable/plus32" />
 
 </RelativeLayout>
