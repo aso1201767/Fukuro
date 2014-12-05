@@ -12,7 +12,8 @@
     <FrameLayout
         android:id="@+id/frame"
         android:layout_width="300dp"
-        android:layout_height="380dp" >
+        android:layout_height="380dp"
+        android:background="@drawable/codebackground" >
 
         <ImageView
             android:id="@+id/imageView1"
@@ -108,5 +109,15 @@
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/spinner1"
         android:src="@drawable/plus32" />
+
+    <SeekBar
+        android:id="@+id/seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/spinner1"
+        android:layout_marginTop="50dp"
+        android:max="10"
+        android:progress="5" />
 
 </RelativeLayout>

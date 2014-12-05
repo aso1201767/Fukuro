@@ -56,19 +56,19 @@
 
     <ImageButton
         android:id="@+id/btnRank"
-        android:layout_width="40dp"
+        android:layout_width="70dp"
         android:layout_height="40dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/ic_launcher" />
+        android:background="@drawable/list" />
 
     <ImageButton
         android:id="@+id/btnLater"
-        android:layout_width="40dp"
+        android:layout_width="70dp"
         android:layout_height="40dp"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/rank3"
-        android:background="@drawable/ic_launcher" />
+        android:background="@drawable/list" />
 
     <ImageView
         android:id="@+id/later1"
@@ -79,5 +79,46 @@
         android:background="#FFFFFF"
         android:clickable="false"
         android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/imageView2"
+        android:src="@drawable/no3" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_above="@+id/rank1"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/no1" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_above="@+id/rank1"
+        android:layout_alignLeft="@+id/rank2"
+        android:src="@drawable/no2" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="230dp"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="14dp"
+        android:layout_toLeftOf="@+id/imageView3"
+        android:src="@drawable/ranking" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="230dp"
+        android:layout_height="59dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/btnLater"
+        android:src="@drawable/sort" />
 
 </RelativeLayout>

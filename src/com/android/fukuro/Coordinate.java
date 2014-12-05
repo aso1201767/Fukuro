@@ -13,6 +13,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.format.Time;
@@ -33,15 +35,19 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 
 
 public class Coordinate extends Activity implements View.OnClickListener  {
 
 	private DBHelper dbHelper = new DBHelper(this);
+	private ZoomImageView zoom;
+	private SeekBar seekBar;
 
 	public static SQLiteDatabase db;
     private Bitmap mBitmap;
@@ -76,12 +82,30 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 	 Toast toast;
 	 Long ss = (long) 1;
 	 String destPath = null;
+	 Bitmap setbmp1;
+	 Bitmap setbmp2;
+	 Bitmap setbmp3;
+	 Bitmap setbmp4;
+	 Bitmap setbmp5;
+	 Bitmap setbmp6;
+	 Bitmap setbmp7;
+	 Bitmap setbmp;
+	 ImageView setimage;
+	 
+	 float seekbar=1f;
+	 float seekimg1=1f;
+	 float seekimg2=1f;
+	 float seekimg3=1f;
+	 float seekimg4=1f;
+	 float seekimg5=1f;
+	 float seekimg6=1f;
+	 float seekimg7=1f;
 	 
 	 private static final int SUB_ACTIVITY = 1001;
 	 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.coordinate);
+		setContentView(R.layout.coordinate);		
 		Log.i("coor","onCreate");
         super.onCreate(savedInstanceState);
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -95,6 +119,92 @@ public class Coordinate extends Activity implements View.OnClickListener  {
        	upbtn.setOnClickListener(this);
        	downbtn.setOnClickListener(this);
        	delebtn.setOnClickListener(this);
+       	
+       	seekBar = (SeekBar)findViewById(R.id.seekbar);
+        
+        // シークバーの初期値をTextViewに表示
+        seekbar=seekBar.getProgress();
+        seekBar.setOnSeekBarChangeListener(
+                new OnSeekBarChangeListener() {
+                    public void onProgressChanged(SeekBar seekBar,
+                            int progress, boolean fromUser) {
+                    	// ツマミをドラッグしたときに呼ばれる
+                        seekbar=seekBar.getProgress();
+                   if(selectedView!=0){
+                        if(seekbar==0){
+                        	seekbar=0.5f;
+                        }else if(seekbar==1){
+                        	seekbar=0.6f;
+                        }else if(seekbar==2){
+                        	seekbar=0.7f;
+                        }else if(seekbar==3){
+                        	seekbar=0.8f;
+                        }else if(seekbar==4){
+                        	seekbar=0.9f;
+                        }else if(seekbar==5){
+                        	seekbar=1f;
+                        }else if(seekbar==6){
+                        	seekbar=1.1f;
+                        }else if(seekbar==7){
+                        	seekbar=1.2f;
+                        }else if(seekbar==8){
+                        	seekbar=1.3f;
+                        }else if(seekbar==9){
+                        	seekbar=1.4f;
+                        }else if(seekbar==10){
+                        	seekbar=1.5f;
+                        }
+                        
+                        for(int i=0;i<priority.size();i++){
+       	        		 if(selectedView==priority.get(i)){
+       		        		 if(usesimg.get(i)=="img1"){
+       		        			 seekimg1=seekbar;
+       		        			setbmp=setbmp1;
+       		        			setimage=img1;
+       		        		 }else if(usesimg.get(i)=="img2"){
+       							seekimg2=seekbar;
+       							setbmp=setbmp2;
+       							setimage=img2;
+       		        		 }else if(usesimg.get(i)=="img3"){
+       							seekimg3=seekbar;
+       							setbmp=setbmp3;
+       							setimage=img3;
+       		        		 }else if(usesimg.get(i)=="img4"){
+       							seekimg4=seekbar;
+       							setbmp=setbmp4;
+       							setimage=img4;
+       		        		 }else if(usesimg.get(i)=="img5"){
+       							seekimg5=seekbar;
+       							setbmp=setbmp5;
+       							setimage=img5;
+       		        		 }else if(usesimg.get(i)=="img6"){
+       							seekimg6=seekbar;
+       							setbmp=setbmp6;
+       							setimage=img6;
+       		        		 }else if(usesimg.get(i)=="img7"){
+       							seekimg7=seekbar;
+       							setbmp=setbmp7;
+       							setimage=img7;
+       		        		 }
+       	        		   }
+       	        	 	}
+                        Matrix matrix = new Matrix();
+        				matrix.setScale(seekbar, seekbar);
+        				setimage.setImageBitmap(Bitmap
+        				        .createBitmap(setbmp, 0, 0,setbmp.getWidth(), setbmp.getHeight(), matrix, true));
+                   	}
+                        
+                    }
+ 
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                        // ツマミに触れたときに呼ばれる
+                    }
+ 
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        // ツマミを離したときに呼ばれる
+                    }
+                }
+        );
 
 		//読み書き可能なデータベースをオープン
 		// 読み取り専用の場合はgetReadableDatabase()を用いる
@@ -157,8 +267,8 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 			cr.moveToFirst();
 		    
 			for(int cnt = 1; cnt <= cr.getCount(); cnt++){
-//				destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(0);
-				destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(0);
+				destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(0);
+//				destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(0);
 				// List<String> imgList にはファイルのパスを入れる
 				itemPath.add(destPath);
 				item_priority.add(cr.getString(1));
@@ -345,7 +455,7 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 
          case R.id.savebtn:
         	 if(previousview.equals("MylistDetails")){
-        		 Bitmap mBitmap = Bitmap.createBitmap(view.getDrawingCache(),30,175,570,880,null,true);
+        		 Bitmap mBitmap = Bitmap.createBitmap(view.getDrawingCache(),40,184,587,750,null,true);
         		 
         		 try {
         			 // sdcardフォルダを指定
@@ -373,7 +483,7 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 	        		 String date = time.year + "/" + (time.month+1) + "/" + time.monthDay + " " + time.hour + ":" + time.minute + ":" + time.second;
 	        		 MylistID = dbHelper.InsertMylist(db,date);
 	        		
-	        		 Bitmap mBitmap = Bitmap.createBitmap(view.getDrawingCache(),30,175,570,880,null,true);
+	        		 Bitmap mBitmap = Bitmap.createBitmap(view.getDrawingCache(),40,184,587,750,null,true);
 	        		 
 	        		 try {
 	        			 // sdcardフォルダを指定
@@ -477,18 +587,25 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 		        		 flag = flag - 1 ;
 		        		 if(imglist[i]=="img1"){
 								ItemID1="";
+								seekimg1=1f;
 							}else if(imglist[i]=="img2"){
 								ItemID2="";
+								seekimg2=1f;
 							}else if(imglist[i]=="img3"){
 								ItemID3="";
+								seekimg3=1f;
 							}else if(imglist[i]=="img4"){
 								ItemID4="";
+								seekimg4=1f;
 							}else if(imglist[i]=="img5"){
 								ItemID5="";
+								seekimg5=1f;
 							}else if(imglist[i]=="img6"){
 								ItemID6="";
+								seekimg6=1f;
 							}else if(imglist[i]=="img7"){
 								ItemID7="";
+								seekimg7=1f;
 							}
 	        		 }
 	        	 }
@@ -545,24 +662,31 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 						if(nowimg=="img1"){
 							img1.setImageBitmap(_bm);
 							priority.add(R.id.imageView1);
+							setbmp1=_bm;
 						}else if(nowimg=="img2"){
 							img2.setImageBitmap(_bm);
 							priority.add(R.id.imageView2);
+							setbmp2=_bm;
 						}else if(nowimg=="img3"){
 							img3.setImageBitmap(_bm);
 							priority.add(R.id.imageView3);
+							setbmp3=_bm;
 						}else if(nowimg=="img4"){
 							img4.setImageBitmap(_bm);
 							priority.add(R.id.imageView4);
+							setbmp4=_bm;
 						}else if(nowimg=="img5"){
 							img5.setImageBitmap(_bm);
 							priority.add(R.id.imageView5);
+							setbmp5=_bm;
 						}else if(nowimg=="img6"){
 							img6.setImageBitmap(_bm);
 							priority.add(R.id.imageView6);
+							setbmp6=_bm;
 						}else if(nowimg=="img7"){
 							img7.setImageBitmap(_bm);
 							priority.add(R.id.imageView7);
+							setbmp7=_bm;
 						}
 					}
 				setImageView(nowimg);
@@ -729,69 +853,69 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN://タッチイベント開始
 				Log.i("test","view="+view.getId());
-				if(R.id.imageView1==selectedView){
-					//img1.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
-				}else if(R.id.imageView2==selectedView){
-					//img2.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
-				}else if(R.id.imageView3==selectedView){
-					//img3.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
-				}else if(R.id.imageView4==selectedView){
-					//img4.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
-				}else if(R.id.imageView5==selectedView){
-					//img5.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
-				}else if(R.id.imageView6==selectedView){
-					//img6.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
-				}else if(R.id.imageView7==selectedView){
-					//img7.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
-				}
+//				if(R.id.imageView1==selectedView){
+//					//img1.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+//				}else if(R.id.imageView2==selectedView){
+//					//img2.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+//				}else if(R.id.imageView3==selectedView){
+//					//img3.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+//				}else if(R.id.imageView4==selectedView){
+//					//img4.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+//				}else if(R.id.imageView5==selectedView){
+//					//img5.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+//				}else if(R.id.imageView6==selectedView){
+//					//img6.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+//				}else if(R.id.imageView7==selectedView){
+//					//img7.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.anborder));
+//				}
 				if(R.id.imageView1==view.getId()){
 					if(view.getId()!=selectedView){
 						//img1.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
 						selectedView=view.getId();
 					}else{
-						selectedView=0;
+						//selectedView=0;
 					}
 				}else if(R.id.imageView2==view.getId()){
 					if(view.getId()!=selectedView){
 						//img2.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
 						selectedView=view.getId();
 					}else{
-						selectedView=0;
+						//selectedView=0;
 					}
 				}else if(R.id.imageView3==view.getId()){
 					if(view.getId()!=selectedView){
 						//img3.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
 						selectedView=view.getId();
 					}else{
-						selectedView=0;
+						//selectedView=0;
 					}
 				}else if(R.id.imageView4==view.getId()){
 					if(view.getId()!=selectedView){
 						//img4.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
 						selectedView=view.getId();
 					}else{
-						selectedView=0;
+						//selectedView=0;
 					}
 				}else if(R.id.imageView5==view.getId()){
 					if(view.getId()!=selectedView){
 						//img5.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
 						selectedView=view.getId();
 					}else{
-						selectedView=0;
+						//selectedView=0;
 					}
 				}else if(R.id.imageView6==view.getId()){
 					if(view.getId()!=selectedView){
 						//img6.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
 						selectedView=view.getId();
 					}else{
-						selectedView=0;
+						//selectedView=0;
 					}
 				}else if(R.id.imageView7==view.getId()){
 					if(view.getId()!=selectedView){
 						//img7.setBackgroundDrawable(getApplicationContext().getResources().getDrawable(R.drawable.border));
 						selectedView=view.getId();
 					}else{
-						selectedView=0;
+						//selectedView=0;
 					}
 				}
 				

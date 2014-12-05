@@ -88,13 +88,14 @@ public class DownloadImageTask
 	  	    	  istream = url.openStream();
 	  	    	  BitmapFactory.Options opt = new BitmapFactory.Options();
 	  	    	  //解像度
-//	  	    	  opt.inSampleSize=2;
+	  	    	  opt.inSampleSize=7;
 	  	    	  opt.inPurgeable=true;
 	  	    	  //読み込んだファイルをビットマップに変換
 	  	    	  oBmp = BitmapFactory.decodeStream(istream,null,opt);
 	  	    	  //インプットストリームを閉じる
 	  	    	  istream.close();
 	  	    	  bmList.add(i,oBmp);
+	  	    	  oBmp=null;
 	  	      }
 	      }
 	  } catch (ClientProtocolException e) {

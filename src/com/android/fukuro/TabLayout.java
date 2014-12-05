@@ -119,6 +119,7 @@ public class TabLayout extends Activity{
 //		//インテントで指定した別の画面に遷移する
 //		startActivity(intent);
 		
+
 		picname = getPicFileName();
 		picFile = new File(
 			Environment.getExternalStorageDirectory() + "/Item",

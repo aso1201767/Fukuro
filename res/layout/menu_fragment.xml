@@ -7,21 +7,18 @@
 
     <Button
         android:id="@+id/menu_btn1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="250dp"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="155dp"
-        android:text="@string/menu_btn1" />
-    
+        android:background="@drawable/closet" />
+
     <Button
         android:id="@+id/menu_btn2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_width="fill_parent"
+        android:layout_height="250dp"
+        android:layout_alignParentLeft="true"
         android:layout_below="@+id/menu_btn1"
-        android:layout_marginRight="92dp"
-        android:layout_marginTop="53dp"
-        android:text="@string/menu_btn2" />
+        android:background="@drawable/cood" />
 
 </RelativeLayout>

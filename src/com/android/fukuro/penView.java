@@ -68,8 +68,8 @@ public class penView extends ImageView {
 	public penView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		setFocusable(true);
-		setScaleType(ImageView.ScaleType.MATRIX);
-		gesDetect = new ScaleGestureDetector(context, onScaleGestureListener);
+//		setScaleType(ImageView.ScaleType.MATRIX);
+//		gesDetect = new ScaleGestureDetector(context, onScaleGestureListener);
 	}
 
 	protected void onDraw(Canvas canvas) {
@@ -285,33 +285,33 @@ public class penView extends ImageView {
 	}
 
 	//拡大・縮小
-	private final SimpleOnScaleGestureListener onScaleGestureListener = new SimpleOnScaleGestureListener() {
-
-		@Override
-		public boolean onScale(ScaleGestureDetector detector) {
-			// TODO Auto-generated method stub
-			imgMatrix.set(baseMatrix);
-			imgMatrix.postScale(detector.getScaleFactor(),
-					detector.getScaleFactor(), detector.getFocusX(),
-					detector.getFocusY());
-			return super.onScale(detector);
-		}
-
-		@Override
-		public boolean onScaleBegin(ScaleGestureDetector detector) {
-			// TODO Auto-generated method stub
-			baseMatrix.set(imgMatrix);
-			touchMode = TOUCH_MULTI;
-			return super.onScaleBegin(detector);
-		}
-
-		@Override
-		public void onScaleEnd(ScaleGestureDetector detector) {
-			// TODO Auto-generated method stub
-			touchMode = TOUCH_NONE;
-			super.onScaleEnd(detector);
-		}
-	};
+//	private final SimpleOnScaleGestureListener onScaleGestureListener = new SimpleOnScaleGestureListener() {
+//
+//		@Override
+//		public boolean onScale(ScaleGestureDetector detector) {
+//			// TODO Auto-generated method stub
+//			imgMatrix.set(baseMatrix);
+//			imgMatrix.postScale(detector.getScaleFactor(),
+//					detector.getScaleFactor(), detector.getFocusX(),
+//					detector.getFocusY());
+//			return super.onScale(detector);
+//		}
+//
+//		@Override
+//		public boolean onScaleBegin(ScaleGestureDetector detector) {
+//			// TODO Auto-generated method stub
+//			baseMatrix.set(imgMatrix);
+//			touchMode = TOUCH_MULTI;
+//			return super.onScaleBegin(detector);
+//		}
+//
+//		@Override
+//		public void onScaleEnd(ScaleGestureDetector detector) {
+//			// TODO Auto-generated method stub
+//			touchMode = TOUCH_NONE;
+//			super.onScaleEnd(detector);
+//		}
+//	};
 	
 	//保存処理
 	public void saveBitmapToSd() {

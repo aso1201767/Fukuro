@@ -169,7 +169,7 @@ public class MyPage extends Fragment{
 	    	            File file = new File(Environment.getExternalStorageDirectory() + "/Item/"+ coordename.get(index1));
 	    	            if (file.exists()) {
 	    	                    _bm2 = BitmapFactory.decodeFile(file.getPath());
-	    	                    _bm2 = Bitmap.createScaledBitmap(_bm2, 230, 250, false);
+	    	                    _bm2 = Bitmap.createScaledBitmap(_bm2, 120, 160, false);
 	    	                    parent.setimage(R.id.imageView3,_bm2);
 	    	            }else{
 	    	                //存在しない
@@ -184,7 +184,7 @@ public class MyPage extends Fragment{
 	    	            File file = new File(Environment.getExternalStorageDirectory() + "/Item/" + coordename.get(index2));
 	    	            if (file.exists()) {
 	    	                    _bm3 = BitmapFactory.decodeFile(file.getPath());
-	    	                    _bm3 = Bitmap.createScaledBitmap(_bm3, 230, 250, false);
+	    	                    _bm3 = Bitmap.createScaledBitmap(_bm3, 120, 160, false);
 	    	                    parent.setimage(R.id.imageView4,_bm3);
 	    	            }else{
 	    	                //存在しない
@@ -199,7 +199,7 @@ public class MyPage extends Fragment{
 	    	        	File file = new File(Environment.getExternalStorageDirectory() + "/Item/" + coordename.get(index3));
 	    	            if (file.exists()) {
 	    	                    _bm4 = BitmapFactory.decodeFile(file.getPath());
-	    	                    _bm4 = Bitmap.createScaledBitmap(_bm4, 230, 250, false);
+	    	                    _bm4 = Bitmap.createScaledBitmap(_bm4, 120, 160, false);
 	    	                    parent.setimage(R.id.imageView2,_bm4);
 	    	            }else{
 	    	                //存在しない

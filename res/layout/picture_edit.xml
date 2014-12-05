@@ -20,19 +20,20 @@
     android:id="@+id/SeekBar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_alignRight="@+id/RadioGroup"
-    android:layout_below="@+id/draw_back_btn"
-    android:layout_marginTop="20dp"
+    android:layout_alignRight="@+id/view1"
+    android:layout_below="@+id/view1"
+    android:layout_marginTop="150dp"
     android:progress="0"
-    android:max="90" />
+    android:max="100" />
 
 <TextView
     android:id="@+id/tv1"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignLeft="@+id/SeekBar"
-    android:layout_below="@+id/draw_back_btn"
-    android:text="@string/picture_edit_lbl" />
+    android:layout_below="@+id/RadioGroup"
+    android:text="@string/picture_edit_lbl"
+    android:layout_marginTop="15dp" />
 
 <RadioGroup
     android:id="@+id/RadioGroup"
@@ -40,7 +41,8 @@
     android:layout_height="wrap_content"
     android:layout_alignLeft="@+id/view1"
     android:layout_below="@+id/view1"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:layout_marginTop="30dp" >
 
     <RadioButton
         android:id="@+id/radioButton1"
@@ -75,7 +77,6 @@
     android:layout_height="wrap_content"
     android:layout_alignRight="@+id/view1"
     android:layout_alignTop="@+id/RadioGroup"
-    android:layout_marginTop="64dp"
-    android:text="@string/back" />
+    android:background="@drawable/backbtn" />
 
 </RelativeLayout>
