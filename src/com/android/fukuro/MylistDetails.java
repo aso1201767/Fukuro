@@ -72,8 +72,9 @@ public class MylistDetails extends Activity implements OnClickListener {
 		
 
 		if(bFavo == true){
-			favo.setText("★お気に入り解除");
-			favo.setBackgroundColor(0xff888888);
+//			favo.setText("★お気に入り解除");
+//			favo.setBackgroundColor(0xff888888);
+			favo.setBackgroundResource(R.drawable.unset);
 		}
 
 		del = (Button)findViewById(R.id.btn_del);
@@ -93,14 +94,14 @@ public class MylistDetails extends Activity implements OnClickListener {
 		case R.id.btn_favo:
 			favo = (Button)findViewById(R.id.btn_favo);
 			if(bFavo == true){
-				favo.setText("☆お気に入り登録");
-				favo.setBackgroundColor(0xffcccccc);
+				//favo.setText("☆お気に入り登録");
+				favo.setBackgroundResource(R.drawable.favo);
 				sql = "UPDATE Mylist SET favorite = 'false' WHERE mylist_id = '"+ stID + "'";
 				db.execSQL(sql);
 				bFavo = false;
 			}else{
-				favo.setText("★お気に入り解除");
-				favo.setBackgroundColor(0xff888888);
+				//favo.setText("★お気に入り解除");
+				favo.setBackgroundResource(R.drawable.unset);
 				sql = "UPDATE Mylist SET favorite = 'true' WHERE mylist_id = '"+ stID + "'";
 				db.execSQL(sql);
 				bFavo = true;

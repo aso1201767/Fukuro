@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rela"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.android.fukuro.MainActivity" >
+
+    <FrameLayout
+        android:id="@+id/frame"
+        android:layout_width="300dp"
+        android:layout_height="380dp"
+        android:background="@drawable/codebackground" >
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/downbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/delebtn"
+        android:layout_alignBottom="@+id/delebtn"
+        android:layout_toRightOf="@+id/delebtn"
+        android:background="@drawable/down" />
+
+    <Button
+        android:id="@+id/upbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/downbtn"
+        android:layout_alignBottom="@+id/downbtn"
+        android:layout_toRightOf="@+id/downbtn"
+        android:background="@drawable/up" />
+
+    <Button
+        android:id="@+id/savebtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/upbtn"
+        android:layout_alignBottom="@+id/upbtn"
+        android:layout_toRightOf="@+id/upbtn"
+        android:background="@drawable/save" />
+
+    <Button
+        android:id="@+id/delebtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/frame"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/dusttest" />
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignLeft="@+id/frame"
+        android:layout_below="@+id/frame" />
+
+    <ImageButton
+        android:id="@+id/addbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/spinner1"
+        android:src="@drawable/plus32" />
+
+    <SeekBar
+        android:id="@+id/seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/spinner1"
+        android:layout_marginTop="50dp"
+        android:max="10"
+        android:progress="5" />
+
+</RelativeLayout>

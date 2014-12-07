@@ -85,7 +85,7 @@
         android:layout_alignBaseline="@+id/upbtn"
         android:layout_alignBottom="@+id/upbtn"
         android:layout_toRightOf="@+id/upbtn"
-        android:text="保存" />
+        android:background="@drawable/save" />
 
     <Button
         android:id="@+id/delebtn"

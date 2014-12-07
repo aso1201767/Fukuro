@@ -34,7 +34,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:layout_alignRight="@+id/imageseek"
-    android:text="次へ" />
+    android:background="@drawable/next" />
 
 <RadioGroup
     android:id="@+id/RadioGroup"

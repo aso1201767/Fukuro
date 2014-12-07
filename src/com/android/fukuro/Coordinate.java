@@ -267,8 +267,8 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 			cr.moveToFirst();
 		    
 			for(int cnt = 1; cnt <= cr.getCount(); cnt++){
-				destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(0);
-//				destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(0);
+//				destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(0);
+				destPath = Environment.getExternalStorageDirectory() +"/Item/" + cr.getString(0);
 				// List<String> imgList にはファイルのパスを入れる
 				itemPath.add(destPath);
 				item_priority.add(cr.getString(1));

@@ -13,13 +13,14 @@
             android:id="@+id/imageView1"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/noimage" />
 
         <Button
             android:id="@+id/btn_del"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="削除" />
+            android:background="@drawable/delete" />
+
     </FrameLayout>
 
     <TextView
@@ -46,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/FrameLayout1"
-        android:text="画像編集" />
+        android:background="@drawable/picedit" />
 
     <Button
         android:id="@+id/btn_edit"
@@ -54,6 +55,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/imgeditBtn"
-        android:text="情報編集" />
+        android:background="@drawable/infoedit" />
 
 </RelativeLayout>

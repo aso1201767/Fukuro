@@ -21,10 +21,10 @@
             android:id="@+id/btn_favo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="40dp"
             android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
             android:layout_marginTop="20dp"
-            android:text="☆お気に入り登録" />
+            android:background="@drawable/favo" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="35dp"
                 android:layout_marginTop="15dp"
-                android:text="編集" />
+                android:background="@drawable/edit" />
 
             <Button
                 android:id="@+id/btn_del"
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
                 android:layout_marginTop="15dp"
-                android:text="削除" />
+                android:background="@drawable/delete" />
 
         </LinearLayout>
     </LinearLayout>
