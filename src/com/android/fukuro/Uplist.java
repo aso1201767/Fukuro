@@ -156,6 +156,7 @@ public class Uplist extends Activity implements OnItemClickListener, UploadAsync
 
 		for(int cnt = 0; cnt < cr.getCount(); cnt++){
 			destPath = Environment.getExternalStorageDirectory()+"/Item/" + cr.getString(1);
+//			destPath = "/data/data/"+this.getPackageName()+"/Item/" + cr.getString(1);
 			System.out.println(cr.getString(1));
 			System.out.println(destPath);
 			// List<String> imgList にはファイルのパスを入れる

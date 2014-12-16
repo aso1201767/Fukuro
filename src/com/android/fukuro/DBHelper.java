@@ -92,7 +92,12 @@ public class DBHelper extends SQLiteOpenHelper {
 		db.execSQL("INSERT INTO Category(category_id,category_name) VALUES('5','パンツ')");
 		db.execSQL("INSERT INTO Category(category_id,category_name) VALUES('6','ショートパンツ')");
 		db.execSQL("INSERT INTO Category(category_id,category_name) VALUES('7','全身')");
+		db.execSQL("INSERT INTO Category(category_id,category_name) VALUES('8','その他')");
 		
+	}
+	
+	public void test(SQLiteDatabase db){
+		db.execSQL("INSERT INTO Category(category_id,category_name) VALUES('8','その他')");
 	}
 
 	@Override

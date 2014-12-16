@@ -28,27 +28,27 @@ public class TopActivity extends Activity implements View.OnClickListener{
 		
 		//読み書き可能なデータベースをオープン
 		db = dbHelper.getWritableDatabase();
-
-		File newfile = new File("/data/data/com.android.fukuro/Item");
-		File newfile2 = new File("/data/data/com.android.fukuro/Thambnail");
-
-	    if (newfile.mkdir()){
-	      //System.out.println("ディレクトリの作成に成功しました");
-	      Log.d("ファイル作成","Itemディレクトリの作成に成功しました");
-
-	    }else{
-	      //System.out.println("ディレクトリの作成に失敗しました");
-	      Log.d("ファイル作成","Itemディレクトリの作成に失敗しました");
-	    }
-
-	    if (newfile2.mkdir()){
-		      //System.out.println("ディレクトリの作成に成功しました");
-		      Log.d("ファイル作成","Thambnailディレクトリの作成に成功しました");
-
-		    }else{
-		      //System.out.println("ディレクトリの作成に失敗しました");
-		      Log.d("ファイル作成","Thambnailディレクトリの作成に失敗しました");
-		    }
+//
+//		File newfile = new File("/data/data/com.android.fukuro/Item");
+//		File newfile2 = new File("/data/data/com.android.fukuro/Thambnail");
+//
+//	    if (newfile.mkdir()){
+//	      //System.out.println("ディレクトリの作成に成功しました");
+//	      Log.d("ファイル作成","Itemディレクトリの作成に成功しました");
+//
+//	    }else{
+//	      //System.out.println("ディレクトリの作成に失敗しました");
+//	      Log.d("ファイル作成","Itemディレクトリの作成に失敗しました");
+//	    }
+//
+//	    if (newfile2.mkdir()){
+//		      //System.out.println("ディレクトリの作成に成功しました");
+//		      Log.d("ファイル作成","Thambnailディレクトリの作成に成功しました");
+//
+//		    }else{
+//		      //System.out.println("ディレクトリの作成に失敗しました");
+//		      Log.d("ファイル作成","Thambnailディレクトリの作成に失敗しました");
+//		    }
 	}
 	
 	@Override

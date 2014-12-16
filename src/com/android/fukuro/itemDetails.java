@@ -107,6 +107,8 @@ public class itemDetails extends Activity implements OnClickListener {
 			catename="ショートパンツ";
 		}else if(category.equals("7")){
 			catename="全身";
+		}else if(category.equals("8")){
+			catename="その他";
 		}
 		
 		TextView tcate=(TextView)findViewById(R.id.cateTxt);

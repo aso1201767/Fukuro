@@ -371,7 +371,11 @@ public class Coordinate extends Activity implements View.OnClickListener  {
      	        Spinner spinner = (Spinner) parent;
      	        // 選択されたアイテムのテキストを取得
      	       ss = spinner.getSelectedItemId();
-     	       ss = ss + 1;
+     	       if(ss==6){
+     	    	   ss=ss+2;
+     	       }else{
+     	    	   ss = ss + 1;
+     	       }
      	       setImageView("");
      	    }
 
@@ -412,7 +416,7 @@ public class Coordinate extends Activity implements View.OnClickListener  {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if(id == android.R.id.home){
-            finish();  
+            finish();
             return true;  
 		}
 		return super.onOptionsItemSelected(item);

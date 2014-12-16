@@ -19,7 +19,7 @@
         >
         <activity
             android:name=".TopActivity"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,82 +29,87 @@
         
         <activity
             android:name=".picture_edit"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
         </activity>   
         
         <activity
             android:name=".FirstActivity"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
         </activity>
         
         <activity
             android:name=".SecondActivity"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
         </activity>
         
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
         </activity>
         
         <activity
             android:name=".Coordinate"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
         </activity>
         
         <activity
             android:name=".InfoEditActivity"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
         </activity>
         
         <activity
             android:name=".AddMylist"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
         </activity>   
         
         <activity
             android:name=".MylistDetails"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
         </activity>   
         
         <activity
             android:name=".Uplist"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
         </activity>
         
         <activity
             android:name=".Top30Activity"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
         </activity>
         
         <activity
             android:name=".Later30Activity"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
         </activity>
         
         <activity
             android:name=".TabLayout"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
         </activity>
         
         <activity
             android:name=".ItemList"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
         </activity>
         
         <activity
             android:name=".itemDetails"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
         </activity>
         
         <activity
             android:name=".CUtutorial"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
         </activity>
         
         <activity
             android:name=".petutorial"
-            android:label="@string/app_name" >
+            android:label="@string/icon_name" >
+        </activity>
+        
+        <activity
+            android:name=".Cdtutorial"
+            android:label="@string/icon_name" >
         </activity>
         
     </application>

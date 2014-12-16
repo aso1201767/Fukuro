@@ -1,6 +1,7 @@
 package com.android.fukuro;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class Cdtutorial extends Activity implements View.OnClickListener{
   private DBHelper dbHelper = new DBHelper(this);
@@ -32,21 +34,43 @@ public class Cdtutorial extends Activity implements View.OnClickListener{
          super.onCreate(savedInstanceState);
 
          getActionBar().setDisplayHomeAsUpEnabled(true);
+         db=dbHelper.getReadableDatabase();
 
          ImageButton imgbutton = (ImageButton)findViewById(R.id.addbtn);
          Button btn1 =(Button)findViewById(R.id.savebtn);
          Button upbtn=(Button)findViewById(R.id.upbtn);
          Button downbtn=(Button)findViewById(R.id.downbtn);
          Button delebtn=(Button)findViewById(R.id.delebtn);
+         Button nextbtn=(Button)findViewById(R.id.nextbtn);
          FrameLayout frame = (FrameLayout)findViewById(R.id.frame);
          imgbutton.setOnClickListener(this);
          btn1.setOnClickListener(this);
          upbtn.setOnClickListener(this);
          downbtn.setOnClickListener(this);
          delebtn.setOnClickListener(this);
+         nextbtn.setOnClickListener(this);
          frame.setOnClickListener(this);
          seekBar = (SeekBar)findViewById(R.id.seekbar);
-         seekBar.setOnClickListener(this);
+	        // シークバーの初期値をTextViewに表示
+	        seekBar.setOnSeekBarChangeListener(
+	                new OnSeekBarChangeListener() {
+	                    public void onProgressChanged(SeekBar seekBar,
+	                            int progress, boolean fromUser) {
+	                        // ツマミをドラッグしたときに呼ばれる
+	                    }
+	 
+	                    public void onStartTrackingTouch(SeekBar seekBar) {
+	                        // ツマミに触れたときに呼ばれる
+	                    }
+	 
+	                    public void onStopTrackingTouch(SeekBar seekBar) {
+	                        // ツマミを離したときに呼ばれる
+	                        toast = Toast.makeText(Cdtutorial.this, "選択した服画像のサイズを変更できます。",Toast.LENGTH_LONG);
+	                        toast.setGravity(Gravity.AXIS_CLIP, 0,0);
+	                        toast.show();
+	                    }
+	                }
+	        );
 
     Cursor c = db.rawQuery("select category_name from Category where not category_id=\"7\"", null);
     c.moveToFirst();
@@ -93,7 +117,9 @@ public class Cdtutorial extends Activity implements View.OnClickListener{
    // as you specify a parent activity in AndroidManifest.xml.
    int id = item.getItemId();
    if(id == android.R.id.home){
-             finish();
+       	toast = Toast.makeText(Cdtutorial.this, "コーディネート一覧にもどります。",Toast.LENGTH_LONG);
+	    toast.setGravity(Gravity.AXIS_CLIP, 0,0);
+	    toast.show();
              return true;
    }
    return super.onOptionsItemSelected(item);
@@ -109,44 +135,45 @@ public class Cdtutorial extends Activity implements View.OnClickListener{
      toast.show();
 
      break;
-
+     
+          case R.id.nextbtn:
+        	  Intent vIntent=getIntent();
+        	  String id=vIntent.getStringExtra("previousview");
+        	  Intent intent = new Intent(this, Coordinate.class);
+        	  intent.putExtra("previousview", id);
+        	  startActivity(intent);
+        	  break;
+        	  
           case R.id.savebtn:
            toast = Toast.makeText(Cdtutorial.this, "作成したコーディネートを保存することができます。",Toast.LENGTH_LONG);
      toast.setGravity(Gravity.AXIS_CLIP, 0,0);
      toast.show();
 
      break;
+          
+     case R.id.upbtn:
+	  toast = Toast.makeText(Cdtutorial.this, "選択した服画像を一つ上に。",Toast.LENGTH_LONG);
+      toast.setGravity(Gravity.AXIS_CLIP, 0,0);
+      toast.show();
 
-          case R.id.upbtn:
-           toast = Toast.makeText(Cdtutorial.this, "選択した服画像を一つ上に。",Toast.LENGTH_LONG);
+     break;
+
+     case R.id.downbtn:
+      toast = Toast.makeText(Cdtutorial.this, "選択した服画像を一つ下に。",Toast.LENGTH_LONG);
+      toast.setGravity(Gravity.AXIS_CLIP, 0,0);
+      toast.show();
+
+     break;
+
+    case R.id.delebtn:
+     toast = Toast.makeText(Cdtutorial.this, "選択した服画像を\n削除することができます。",Toast.LENGTH_LONG);
      toast.setGravity(Gravity.AXIS_CLIP, 0,0);
      toast.show();
 
      break;
 
-          case R.id.downbtn:
-           toast = Toast.makeText(Cdtutorial.this, "選択した服画像を一つ下に。",Toast.LENGTH_LONG);
-     toast.setGravity(Gravity.AXIS_CLIP, 0,0);
-     toast.show();
-
-     break;
-
-          case R.id.delebtn:
-           toast = Toast.makeText(Cdtutorial.this, "選択した服画像を削除することができます。",Toast.LENGTH_LONG);
-     toast.setGravity(Gravity.AXIS_CLIP, 0,0);
-     toast.show();
-
-     break;
-
-          case R.id.seekbar:
-           toast = Toast.makeText(Cdtutorial.this, "選択した服画像のサイズを変更できます。",Toast.LENGTH_LONG);
-     toast.setGravity(Gravity.AXIS_CLIP, 0,0);
-     toast.show();
-
-     break;
-
-          case R.id.frame:
-           toast = Toast.makeText(Cdtutorial.this, "この範囲内でコーディネートを行うことができます。",Toast.LENGTH_LONG);
+     case R.id.frame:
+     toast = Toast.makeText(Cdtutorial.this, "この範囲内でコーディネートを\n行うことができます。",Toast.LENGTH_LONG);
      toast.setGravity(Gravity.AXIS_CLIP, 0,0);
      toast.show();
 

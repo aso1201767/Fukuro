@@ -37,7 +37,7 @@
 
     <Button
         android:id="@+id/savebtn"
-        android:layout_width="wrap_content"
+        android:layout_width="56dp"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/upbtn"
         android:layout_alignBottom="@+id/upbtn"
@@ -76,5 +76,14 @@
         android:layout_marginTop="50dp"
         android:max="10"
         android:progress="5" />
+
+    <Button
+        android:id="@+id/nextbtn"
+        android:layout_width="53dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/upbtn"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/next"
+        android:paddingRight="0dp" />
 
 </RelativeLayout>

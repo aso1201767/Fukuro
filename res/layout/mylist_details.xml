@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_weight="0.93"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/noimage" />
 
         <Button
             android:id="@+id/btn_favo"
@@ -32,7 +32,7 @@
 
             <Button
                 android:id="@+id/btn_edit"
-                android:layout_width="120dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="35dp"
                 android:layout_marginTop="15dp"
@@ -40,7 +40,7 @@
 
             <Button
                 android:id="@+id/btn_del"
-                android:layout_width="120dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
                 android:layout_marginTop="15dp"

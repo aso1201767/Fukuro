@@ -61,7 +61,7 @@ public class InfoEditActivity extends Activity implements View.OnClickListener{
 
 		db = dbHelper.getWritableDatabase();
 
-        Button btn1 = (Button)findViewById(R.id.button1);
+        Button btn1 = (Button)findViewById(R.id.nextbtn);
         btn1.setOnClickListener(this);
 
         Button btn2 = (Button)findViewById(R.id.button2);
@@ -94,6 +94,8 @@ public class InfoEditActivity extends Activity implements View.OnClickListener{
 				catename="ショートパンツ";
 			}else if(category.equals("7")){
 				catename="全身";
+			}else if(category.equals("8")){
+				catename="その他";
 			}
 		}
 		
@@ -197,7 +199,7 @@ public class InfoEditActivity extends Activity implements View.OnClickListener{
 		Intent movein = null;
 		switch(v.getId()){
 
-		case R.id.button1:
+		case R.id.nextbtn:
 			if(previousview.equals("itemDetails")){//前画面がitemDetails
 				//String ID = String.format("%04d", id);
 				category = str.toString();

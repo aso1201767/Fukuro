@@ -53,6 +53,7 @@ public class TabLayout extends Activity{
 	private static final int ITEM1 = Menu.FIRST;
 	private static final String CUTflg = "CUTflg1";
 	private static final String PITflg = "PITflg1";
+	private static final String Cdflg = "Cdflg7";
 	Fragment MylistFragment;
 	Fragment ItemMylistFragment;
 	boolean mylist_flg =false;
@@ -104,9 +105,18 @@ public class TabLayout extends Activity{
         Log.d("move","move3");
     }
 	void move1(Class<?> move,String id,String value) {
-        intent = new Intent(this, move);
-        intent.putExtra(id, value);
-        startActivity(intent);
+		 SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+	        if(defaultSharedPreferences.getBoolean(Cdflg,true)){
+	        	defaultSharedPreferences.edit().putBoolean(Cdflg,false).apply();
+	                intent=new Intent(this,Cdtutorial.class);
+	                intent.putExtra(id, value);
+	                startActivity(intent);
+	        }else{
+	                //二回目以降の処理
+	        	intent = new Intent(this, move);
+	            intent.putExtra(id, value);
+	            startActivity(intent);
+	        }
     }
 //	void move2(){
 //		intent = new Intent(getApplicationContext(),Uplist.class);
